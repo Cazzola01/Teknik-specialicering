@@ -36,7 +36,7 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
 
 
 
-    def remove(self, d):
+    def Remove(self, d):
         this_node = self.root #Start looking at the root
         prev_node = None
         while this_node: #Looping trought all Nodes
@@ -54,7 +54,7 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
                 prev_node = this_node #sätter den gamla
                 this_node = this_node.get_next() #ny this_node
         return False #Did not find item
-    def find(self, d):
+    def Find(self, d):
         this_node = self.root #Börjar kolla första element
         while this_node: #Är det något i root
             if this_node.get_data() == d:
@@ -62,6 +62,32 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
             else:
                 this_node = this_node.get_next()
         return False #did not find it
+
+    def Get(self, key):
+        this_node = self.root  # Börjar kolla första element
+        while this_node:  # Är det något i root
+            if this_node.get_data()[0] == key:
+                return this_node.get_data()[1:]
+            else:
+                this_node = this_node.get_next()
+        return False  # did not find it
+    def ContainsKey(self, key):
+        this_node = self.root  # Börjar kolla första element
+        while this_node:  # Är det något i root
+            if this_node.get_data()[0] == key:
+                return True #Found it
+            else:
+                this_node = this_node.get_next()
+        return False  # did not find it
+    def ContainsValue(self, value):
+        this_node = self.root  # Börjar kolla första element
+        while this_node:  # Är det något i root
+            if this_node.get_data()[1:] == value:
+                return True #Found it
+            else:
+                this_node = this_node.get_next()
+        return False  # did not find it
+
     def Length(self):
         return self.size
 

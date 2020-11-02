@@ -17,19 +17,43 @@ class HashMap:
         #if value.dtype() = string/char
 
         #key = hash(value) #Eftersom value är en int, så kan nykeln vara samma
-        key = value
+        key = hash(value)
         return key
 
     def GetIndex(self, key):
         index = key % self.size
         return index
 
-    def put(self, value):
-        key = self.SetToInt(value)
+    def Put(self, key, value):
         index = self.GetIndex(key)
-        self.LinkedListArray[index].AddFirst(value)
+        self.LinkedListArray[index].AddFirst([key, value])
+
+    def Find(self, key, value):
+        index = self.GetIndex(key)
+        print(self.LinkedListArray[index].Find([key, value])) #Print true/false if it found the value
+
+    def Get(self, key):
+        index = self.GetIndex(key)
+        print(self.LinkedListArray[index].Get(key))
+
+    def ContainsKey(self, key):
+        index = self.GetIndex(key)
+        print(self.LinkedListArray[index].ContainsKey(key))
+    def ContainsValue(self, value):
+        for x in range(self.size):
+            if self.LinkedListArray[x].ContainsValue(value):
+                print(True)
+                return True
+        print(False)
+        return False
+
 
 hashmap = HashMap(size=6)
-hashmap.put(43)
+hashmap.Put(key=3, value=[43,4343]) #Key= "user", value=value
+#hashmap.Find(key=3, value=43)
+hashmap.Get(key=3)
+hashmap.ContainsKey(key=6)
+hashmap.ContainsValue(value=[43,4343])
+
 
 
