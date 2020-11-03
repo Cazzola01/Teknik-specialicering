@@ -11,15 +11,6 @@ class HashMap:
             temp_list.append(LinkedList())
         return temp_list
 
-    def SetToInt(self, value): #Make value an int
-        #if value.dtype() = int
-        #if value.dtype() = float
-        #if value.dtype() = string/char
-
-        #key = hash(value) #Eftersom value är en int, så kan nykeln vara samma
-        key = hash(value)
-        return key
-
     def GetIndex(self, key):
         index = key % self.size
         return index
@@ -28,32 +19,44 @@ class HashMap:
         index = self.GetIndex(key)
         self.LinkedListArray[index].AddFirst([key, value])
 
-    def Find(self, key, value):
+    def Find(self, key, value): #true/false if it found the value
         index = self.GetIndex(key)
         print(self.LinkedListArray[index].Find([key, value])) #Print true/false if it found the value
 
-    def Get(self, key):
+    def Get(self, key): # returns the value in the key
         index = self.GetIndex(key)
         print(self.LinkedListArray[index].Get(key))
 
-    def ContainsKey(self, key):
+    def ContainsKey(self, key): #true/false om key finns
         index = self.GetIndex(key)
         print(self.LinkedListArray[index].ContainsKey(key))
-    def ContainsValue(self, value):
-        for x in range(self.size):
+    def ContainsValue(self, value): #kollar om value finns någonstans i hashmap
+        for x in range(self.size): #Vanlig for loop
             if self.LinkedListArray[x].ContainsValue(value):
-                print(True)
                 return True
-        print(False)
         return False
+
+    def clear(self):
+        self = HashMap(size=self.size)
+
+    def isEmpty(self):
+        for x in range(self.size): #Vanlig for loop
+            if self.LinkedListArray[x].isEmpty() is False:
+                return False
+        return True
+    def print(self):
+        for x in range(self.size): #Vanlig for loop
+            print(self.LinkedListArray[x].toList())
 
 
 hashmap = HashMap(size=6)
+hashmap.Put(key=0, value=[43,4343]) #Key= "user", value=value
 hashmap.Put(key=3, value=[43,4343]) #Key= "user", value=value
 #hashmap.Find(key=3, value=43)
-hashmap.Get(key=3)
-hashmap.ContainsKey(key=6)
-hashmap.ContainsValue(value=[43,4343])
-
+#hashmap.Get(key=3)
+#hashmap.ContainsKey(key=6)
+#hashmap.ContainsValue(value=[43,4343])
+print(hashmap.isEmpty())
+hashmap.print()
 
 

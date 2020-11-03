@@ -34,8 +34,6 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
         for x in range(index):
             pass
 
-
-
     def Remove(self, d):
         this_node = self.root #Start looking at the root
         prev_node = None
@@ -70,7 +68,7 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
                 return this_node.get_data()[1:]
             else:
                 this_node = this_node.get_next()
-        return False  # did not find it
+        return None  # did not find it
     def ContainsKey(self, key):
         this_node = self.root  # Börjar kolla första element
         while this_node:  # Är det något i root
@@ -87,6 +85,22 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
             else:
                 this_node = this_node.get_next()
         return False  # did not find it
+
+    def isEmpty(self):
+        r = self.root
+        if r == None:
+            return True
+        else:
+            return False
+
+    def toList(self): #makes a list of all the Node data
+        value_list = []
+        this_node = self.root  # Börjar kolla första element
+        while this_node:  # Är det något i root
+            value_list.append(this_node.get_data())
+            this_node = this_node.get_next()
+        return value_list
+
 
     def Length(self):
         return self.size
