@@ -88,7 +88,7 @@ class LinkedList: #Håller koll och kopplar ihop Nodes
 
     def isEmpty(self):
         r = self.root
-        if r == None:
+        if r is None:
             return True
         else:
             return False
