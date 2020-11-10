@@ -31,7 +31,7 @@ class HashMap:
 
     def ContainsKey(self, key):  # true/false om key finns
         index = self.GetIndex(key)
-        print(self.LinkedListArray[index].ContainsKey(key))
+        return self.LinkedListArray[index].ContainsKey(key)
 
     def ContainsValue(self, value):  # kollar om value finns någonstans i hashmap
         for x in range(self.size):  # Vanlig for loop
@@ -52,13 +52,12 @@ class HashMap:
         for x in range(self.size):  # Vanlig for loop
             print(self.LinkedListArray[x].toList())  # Gör linkedList till array och printar uiut
 
-    def LoadDistribute(self, loadFactor=0.75):
+    def LoadDistribute(self, loadFactor=0.75): #Fungerar inte Nya hashmapen blir inte större
         filledNum = 0
         for x in range(self.size):  # Checks how many LinkedLists are filled
             filledNum += 1 if self.LinkedListArray[x].isEmpty() is False else 0
 
         if filledNum / self.size > loadFactor:
-            print('hey')
             oldSize = self.size
             newSize = self.size * 2  # Making the size the double
             newHashMap = HashMap(size=newSize)
@@ -71,13 +70,13 @@ class HashMap:
                     newHashMap.Put(key, value)
             self = newHashMap  # Hashmap = newHashMap
 
+if __name__ == "main":
+    hashmap = HashMap(size=2)
+    hashmap.Put(key=0, value=[43, 4343])  # Key= "user", value=value
+    hashmap.Put(key=1, value=[43, 4343])  # Key= "user", value=value
+    hashmap.print()
 
-hashmap = HashMap(size=2)
-hashmap.Put(key=0, value=[43, 4343])  # Key= "user", value=value
-hashmap.Put(key=1, value=[43, 4343])  # Key= "user", value=value
-hashmap.print()
+    print("")
 
-print("")
-
-hashmap.LoadDistribute(0.75)
-hashmap.print()
+    hashmap.LoadDistribute(0.75)
+    hashmap.print()
