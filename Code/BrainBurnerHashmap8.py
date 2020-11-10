@@ -24,9 +24,7 @@ def CheckSubsetHashmap(arr1, arr2):
         arr2_hash.Put(x,x)
 
     for x in arr2:
-        if arr1_hash.ContainsKey(x):
-            pass
-        else:
+        if arr1_hash.ContainsKey(x) is False:
             return False
     return True
 ''':key
