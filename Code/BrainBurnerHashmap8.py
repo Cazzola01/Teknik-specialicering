@@ -18,12 +18,9 @@ def CheckSubset(longArr, shortArr):
 def CheckSubsetHashmap(longArr, shortArr):
     #Empty Hahsmaps
     longArr_hash = HashMap(size=6)
-    shortArr_hash = HashMap(size=6)
     #Putting values in the Hashmaps
     for x in longArr:
         longArr_hash.Put(x,x)
-    for x in shortArr:
-        shortArr_hash.Put(x,x)
 
     #Checking
     for x in shortArr:
