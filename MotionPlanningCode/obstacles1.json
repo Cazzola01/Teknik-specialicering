@@ -1,0 +1,31 @@
+{
+	"setup": 
+	{
+		"width": 800,
+		"height": 700,
+		"K": 5,
+		"numSamples": 1000
+	},
+	"obstacles":
+	{
+		"obstacle1":
+		{
+			"type": "Triangle",
+			"id": "triangle1",
+			"vertices": [[300, 300], [700, 300], [700, 700]]
+		},
+		"obstacle2":
+		{
+			"type": "Triangle",
+			"id": "triangle2",
+			"vertices": [[100, 100], [300, 100], [700, 200]]
+		},
+		"obstacle3":
+		{
+			"type": "Circle",
+			"id": "circle",
+			"center": [200, 600],
+			"radius": 100
+		}
+	}
+}
