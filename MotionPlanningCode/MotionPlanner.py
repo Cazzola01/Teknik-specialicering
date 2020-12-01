@@ -6,7 +6,7 @@ import random
 with open('obstaclesCircles.json') as json_file:
     data = json.load(json_file)
 
-print(data)
+#print(data)
 
 window = pyglet.window.Window(width=800, height=800)
 label = pyglet.text.Label('Hello, world',
@@ -28,6 +28,7 @@ def GenerateRandomTuplePoints(pointNum=100):
 
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
 renderer.add_render_object("Point", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
+print(renderer.get_render_object())
 
 @window.event
 def on_draw():
@@ -35,6 +36,6 @@ def on_draw():
     renderer.draw()
     label.draw()
 
-pyglet.app.run()
+#pyglet.app.run()
 
 

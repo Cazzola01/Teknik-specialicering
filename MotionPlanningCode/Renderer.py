@@ -8,6 +8,7 @@ class Renderer():
         self.height = height
         self.render_objects = {}
         self.circle_num_angles = 361
+        self.render_objects_info = {}
 
     """adds a new prmitive that is going to be rendered on screen id is name of the primitive. For example triangle1.
     Type is Point, Triangle, Quad or Circle
@@ -15,6 +16,8 @@ class Renderer():
     If type is Circle then vertices only stores a list of the circle's center-point (tuple) and radius
     Vertices are given in counter-clockwise order"""
     def add_render_object(self, type, vertices, id, color):
+        self.render_objects_info[id] = {"type":type, "vertices":vertices, "color":color}
+
         self.render_objects[id] = {}
         self.render_objects[id]["type"] = type
         if type == "Circle":
@@ -75,3 +78,5 @@ class Renderer():
                     glColor3f(rgb[0], rgb[1], rgb[2])
                     glVertex2f(vertex[0], vertex[1])
                 glEnd()
+    def get_render_object(self):
+        return self.render_objects_info
