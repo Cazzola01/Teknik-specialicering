@@ -27,11 +27,20 @@ def GenerateRandomTuplePoints(pointNum=100):
     return pointList
 
 def CheckCollision(render_objects):
+    get_points = render_objects["points"]
+    print(get_points)
+
     print(render_objects)
     print(render_objects.values())
 
+    for value in render_objects.values():
+        if value["type"] == "Circle":
+            #Do distance math
+            pass
+
+#type, vertices, id, color
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
-renderer.add_render_object("Point", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
+renderer.add_render_object("Points", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
 CheckCollision(renderer.get_render_object())
 
 
