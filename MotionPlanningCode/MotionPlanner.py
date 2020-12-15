@@ -16,43 +16,44 @@ label = pyglet.text.Label('Hello, world',
                           anchor_x='center', anchor_y='center')
 renderer = Renderer(window.width,window.height) #Lin window created
 
-def GenerateRandomTuplePoints(pointNum=100):
-    randomxlist = random.sample(range(0, 800), pointNum)
-    randomylist = random.sample(range(0, 800), pointNum)
+def GenerateAllPoints(num=100):
+    for x in range(num):
+        random_x = random.randint(0, 800)
+        random_y = random.randint(0, 800)
+        tuplePoint = (random_x, random_y)
+        id = "point" + str(x)
+        renderer.add_render_object("Point", [tuplePoint], id, [0, 0, 0])
 
-    pointList = []
-    for x in range(pointNum):
-        tuplePoint = (randomxlist[x], randomylist[x])
-        pointList.append(tuplePoint)
-    return pointList
+def GetDistance(vector1, vector2):
+    x1 = vector1[0]
+    y1 = vector1[1]
+
+    x2 = vector2[0]
+    y2 = vector2[1]
+
+    distance = ((((x2 - x1) ** 2) + ((y2 - y1) ** 2)) ** 0.5)
+    return distance
 
 def CheckCollision(render_objects):
-    all_points_pos = render_objects["points"]["vertices"]
-    print(all_points_pos)
+    for key1 in render_objects:
+        value1 = render_objects[key1]
+        if value1["type"] == "Circle":
+            for key2 in render_objects:
+                value2 = render_objects[key2]
+                if value2["type"] == "Point":
+                    distance = GetDistance(value1['vertices'][0], value2['vertices'][0])
+                    circle_radius = value1['vertices'][1]
+                    if distance < circle_radius:
+                        renderer.remove_render_object(key2)
 
-    print(render_objects)
-    print(render_objects.values())
 
-    for key in render_objects:
-        value = render_objects[key]
-        if value["type"] == "Circle":
-            for point_pos in all_points_pos:
-                # Do distance math
-                x1 = point_pos[0]
-                y1 = point_pos[1]
-                value_pos = value["vertices"][0]
-                value_radius = value["vertices"][1]
-                x2 = value_pos[0]
-                y2 = value_pos[1]
-                distance = ((((x2 - x1 )**2) + ((y2-y1)**2) )**0.5)
-                print(distance)
-                if (distance < value_radius):
-                    renderer.remove_render_object(key)
-                    #pass
 
 #type, vertices, id, color
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
-renderer.add_render_object("Point", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
+renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
+GenerateAllPoints(num=100)
+
+print(renderer.get_render_object())
 CheckCollision(renderer.get_render_object())
 
 
