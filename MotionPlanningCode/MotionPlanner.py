@@ -27,20 +27,32 @@ def GenerateRandomTuplePoints(pointNum=100):
     return pointList
 
 def CheckCollision(render_objects):
-    get_points = render_objects["points"]
-    print(get_points)
+    all_points_pos = render_objects["points"]["vertices"]
+    print(all_points_pos)
 
     print(render_objects)
     print(render_objects.values())
 
-    for value in render_objects.values():
+    for key in render_objects:
+        value = render_objects[key]
         if value["type"] == "Circle":
-            #Do distance math
-            pass
+            for point_pos in all_points_pos:
+                # Do distance math
+                x1 = point_pos[0]
+                y1 = point_pos[1]
+                value_pos = value["vertices"][0]
+                value_radius = value["vertices"][1]
+                x2 = value_pos[0]
+                y2 = value_pos[1]
+                distance = ((((x2 - x1 )**2) + ((y2-y1)**2) )**0.5)
+                print(distance)
+                if (distance < value_radius):
+                    renderer.remove_render_object(key)
+                    #pass
 
 #type, vertices, id, color
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
-renderer.add_render_object("Points", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
+renderer.add_render_object("Point", GenerateRandomTuplePoints(pointNum=100), "points", [0,0,0])
 CheckCollision(renderer.get_render_object())
 
 
@@ -52,6 +64,6 @@ def on_draw():
     renderer.draw()
     label.draw()
 
-#pyglet.app.run()
+pyglet.app.run()
 
 
