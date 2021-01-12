@@ -36,13 +36,40 @@ def CircleCollision(render_objects):
                     if distance < circle_radius:
                         renderer.remove_render_object(key2)
 
-def TriangleCollision():
-    renderer.add_render_object("Point", [(800,800)], "point500", [0, 0, 0])
+def CreateVector(a,b):
+    return [b[0]-a[0],b[1]-a[1]] #[x1-x2, y1-y2]
+
+def GetNormalVector(a):
+    return [-a[0], a[1]] #[-x,y]
+
+def DotProduct(a,b):
+    return a[0]*b[0]+a[1]*b[1]
+
+def TriangleCollision(render_objects):
+    renderer.add_render_object("Point", [(600,500)], "point500", [0, 0, 0])
     renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1,0,0])
 
-    render_objects = renderer.get_render_object()
-    point = render_objects["point500"]
-    triangle = render_objects["triangle500"]
+    point = render_objects["point500"]['vertices'][0]
+    triangle_points = render_objects["triangle500"]['vertices']
+
+    AB = CreateVector(triangle_points[0], triangle_points[1])
+    BC = CreateVector(triangle_points[1], triangle_points[2])
+    CA = CreateVector(triangle_points[2], triangle_points[0])
+
+    print(DotProduct(GetNormalVector(AB), point))
+    print(DotProduct(GetNormalVector(BC), point))
+    print(DotProduct(GetNormalVector(CA), point))
+
+    if (DotProduct(GetNormalVector(AB), point) >= 0) or (DotProduct(GetNormalVector(AB), point) >= 0) or (DotProduct(GetNormalVector(AB), point) >= 0):
+        print("inside!")
+        #renderer.remove_render_object("point500")
+    else:
+        print("outside!")
+
+
+
+
+
 
 
 with open('obstaclesCircles.json') as json_file:
@@ -65,8 +92,8 @@ renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
 
 GenerateAllPoints(num=100)
 
-print(renderer.get_render_object())
-CircleCollision(renderer.get_render_object())
+#print(renderer.get_render_object())
+#CircleCollision(renderer.get_render_object())
 TriangleCollision(renderer.get_render_object())
 
 @window.event
