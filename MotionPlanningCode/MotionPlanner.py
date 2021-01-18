@@ -40,14 +40,15 @@ def CreateVector(a,b):
     return [b[0]-a[0],b[1]-a[1]] #[x1-x2, y1-y2]
 
 def GetNormalVector(a):
-    return [-a[0], a[1]] #[-x,y]
+    return [-a[1], a[0]] #[-y,x]
 
 def DotProduct(a,b):
     return a[0]*b[0]+a[1]*b[1]
 
 def TriangleCollision(render_objects):
-    renderer.add_render_object("Point", [(600,500)], "point500", [0, 0, 0])
+
     renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1,0,0])
+    renderer.add_render_object("Point", [(600, 500)], "point500", [0, 0, 0])
 
     point = render_objects["point500"]['vertices'][0]
     triangle_points = render_objects["triangle500"]['vertices']
@@ -60,7 +61,7 @@ def TriangleCollision(render_objects):
     print(DotProduct(GetNormalVector(BC), point))
     print(DotProduct(GetNormalVector(CA), point))
 
-    if (DotProduct(GetNormalVector(AB), point) >= 0) or (DotProduct(GetNormalVector(AB), point) >= 0) or (DotProduct(GetNormalVector(AB), point) >= 0):
+    if (DotProduct(GetNormalVector(AB), point) >= 0) and (DotProduct(GetNormalVector(AB), point) >= 0) and (DotProduct(GetNormalVector(AB), point) >= 0):
         print("inside!")
         #renderer.remove_render_object("point500")
     else:
