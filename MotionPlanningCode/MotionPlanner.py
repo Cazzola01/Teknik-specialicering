@@ -48,20 +48,22 @@ def DotProduct(a,b):
 def TriangleCollision(render_objects):
 
     renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1,0,0])
-    renderer.add_render_object("Point", [(600, 500)], "point500", [0, 0, 0])
+    renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
 
     point = render_objects["point500"]['vertices'][0]
     triangle_points = render_objects["triangle500"]['vertices']
 
-    AB = CreateVector(triangle_points[0], triangle_points[1])
-    BC = CreateVector(triangle_points[1], triangle_points[2])
-    CA = CreateVector(triangle_points[2], triangle_points[0])
+    A = triangle_points[0]
+    B = triangle_points[1]
+    C = triangle_points[2]
 
-    print(DotProduct(GetNormalVector(AB), point))
-    print(DotProduct(GetNormalVector(BC), point))
-    print(DotProduct(GetNormalVector(CA), point))
+    AB = CreateVector(A, B)
+    BC = CreateVector(B, C)
+    CA = CreateVector(C, A)
 
-    if (DotProduct(GetNormalVector(AB), point) >= 0) and (DotProduct(GetNormalVector(AB), point) >= 0) and (DotProduct(GetNormalVector(AB), point) >= 0):
+    if (DotProduct(GetNormalVector(AB), CreateVector(A, point)) >= 0)\
+            and (DotProduct(GetNormalVector(BC), CreateVector(B, point)) >= 0)\
+            and (DotProduct(GetNormalVector(CA), CreateVector(C, point)) >= 0):
         print("inside!")
         #renderer.remove_render_object("point500")
     else:
