@@ -3,6 +3,11 @@ from MotionPlanningCode.Renderer import Renderer
 import pyglet
 import random
 
+def reciveData():
+    with open('obstaclesCircles.json') as json_file:
+        data = json.load(json_file)
+        # print(data)
+
 def GenerateAllPoints(num=100):
     for x in range(num):
         random_x = random.randint(0, 800)
@@ -47,38 +52,57 @@ def DotProduct(a,b):
 
 def TriangleCollision(render_objects):
 
-    renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1,0,0])
-    renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
+    #Searshing for Circle
+    for key1 in render_objects:
+        value1 = render_objects[key1]
+        if value1["type"] == "Triangle":
+    #Searshing for Point
+            for key2 in render_objects:
+                value2 = render_objects[key2]
+                if value2["type"] == "Point":
+                    point = value2['vertices'][0]
+                    triangle_points = value1['vertices']
 
-    point = render_objects["point500"]['vertices'][0]
-    triangle_points = render_objects["triangle500"]['vertices']
+                    A = triangle_points[0]
+                    B = triangle_points[1]
+                    C = triangle_points[2]
 
-    A = triangle_points[0]
-    B = triangle_points[1]
-    C = triangle_points[2]
+                    AB = CreateVector(A, B)
+                    BC = CreateVector(B, C)
+                    CA = CreateVector(C, A)
 
-    AB = CreateVector(A, B)
-    BC = CreateVector(B, C)
-    CA = CreateVector(C, A)
+                    if (DotProduct(GetNormalVector(AB), CreateVector(A, point)) >= 0)\
+                            and (DotProduct(GetNormalVector(BC), CreateVector(B, point)) >= 0)\
+                            and (DotProduct(GetNormalVector(CA), CreateVector(C, point)) >= 0):
+                        #print("inside!")
+                        renderer.remove_render_object(key2)
+                    else:
+                        #print("outside!")
+                        pass
 
-    if (DotProduct(GetNormalVector(AB), CreateVector(A, point)) >= 0)\
-            and (DotProduct(GetNormalVector(BC), CreateVector(B, point)) >= 0)\
-            and (DotProduct(GetNormalVector(CA), CreateVector(C, point)) >= 0):
-        print("inside!")
-        #renderer.remove_render_object("point500")
-    else:
-        print("outside!")
+def KNN(render_objects, K):
+
+    all_points = []
+    # Searshing for Point
+    for key2 in render_objects:
+        value2 = render_objects[key2]
+        if value2["type"] == "Point":
+            found_point = value2['vertices'][0]
+            all_points.append(found_point)
+
+    for x, check_point in enumerate(all_points): #Starting on point 1
+        distance_list = []
+        for point in all_points: #checking distance form point 1 compered to point n
+            distance_list.append(GetDistance(check_point, point))
+        distance_list = sorted(distance_list)
+        distance_list = distance_list[1:] #removing first element, which is 0, becuse compared to itself.
+        for point in distance_list[:K]:
+            renderer.add_render_object("Line", [check_point, point], "line" + str(x), [0, 0, 0])
 
 
 
 
 
-
-
-with open('obstaclesCircles.json') as json_file:
-    data = json.load(json_file)
-
-#print(data)
 
 window = pyglet.window.Window(width=800, height=800)
 label = pyglet.text.Label('Hello, world',
@@ -92,12 +116,15 @@ renderer = Renderer(window.width,window.height) #Lin window created
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
 renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
 #renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle1", [1,0,0])
+renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1, 0, 0])
+renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
 
 GenerateAllPoints(num=100)
 
 #print(renderer.get_render_object())
 #CircleCollision(renderer.get_render_object())
 TriangleCollision(renderer.get_render_object())
+KNN(renderer.get_render_object(), 5)
 
 @window.event
 def on_draw():
