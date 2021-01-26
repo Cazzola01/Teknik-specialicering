@@ -27,8 +27,10 @@ def GetDistance(vector1, vector2):
     distance = ((((x2 - x1) ** 2) + ((y2 - y1) ** 2)) ** 0.5) #pytagoras sats
     return distance
 
-def CircleCollision(render_objects):
+def CircleCollision():
     #Searshing for Circle
+    render_objects = renderer.get_render_object()
+    remove_keys = []
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Circle":
@@ -38,9 +40,11 @@ def CircleCollision(render_objects):
                 if value2["type"] == "Point":
     #Calculating distance
                     distance = GetDistance(value1['vertices'][0], value2['vertices'][0]) #GetDistance(origo_Circle, origo_Point)
-                    circle_radius = value1['vertices'][1]
+                    circle_radius = value1['radius']
                     if distance < circle_radius:
-                        renderer.remove_render_object(key2)
+                        remove_keys.append(key2)
+    for key in remove_keys:
+        renderer.remove_render_object(key)
 
 def CreateVector(a,b):
     return [b[0]-a[0],b[1]-a[1]] #[x1-x2, y1-y2]
@@ -51,8 +55,10 @@ def GetNormalVector(a):
 def DotProduct(a,b):
     return a[0]*b[0]+a[1]*b[1]
 
-def TriangleCollision(render_objects):
+def TriangleCollision():
+    render_objects = renderer.get_render_object()
     #Searshing for Circle
+    remove_keys = []
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Triangle":
@@ -75,12 +81,15 @@ def TriangleCollision(render_objects):
                             and (DotProduct(GetNormalVector(BC), CreateVector(B, point)) >= 0)\
                             and (DotProduct(GetNormalVector(CA), CreateVector(C, point)) >= 0):
                         #print("inside!")
-                        renderer.remove_render_object(key2)
+                        remove_keys.append(key2)
                     else:
                         #print("outside!")
                         pass
+    for key in remove_keys:
+        renderer.remove_render_object(key)
 
-def KNN(render_objects, K):
+def KNN(K):
+    render_objects = renderer.get_render_object()
     all_points = []
     #Finding all points, putting them in all_points list
     for key2 in render_objects:
@@ -99,17 +108,7 @@ def KNN(render_objects, K):
         for x, point in enumerate(distance_and_point_list):
             renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x), [0, 0, 0])
 
-
-
-
-
-
 window = pyglet.window.Window(width=800, height=800)
-label = pyglet.text.Label('Hello, world',
-                          font_name='Times New Roman', color=(0,255,255,255),
-                          font_size=36,
-                          x=window.width//2, y=window.height//2,
-                          anchor_x='center', anchor_y='center')
 renderer = Renderer(window.width,window.height) #Lin window created
 
 #type, vertices, id, color
@@ -122,17 +121,15 @@ renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
 GenerateAllPoints(num=100)
 
 #print(renderer.get_render_object())
-CircleCollision(renderer.get_render_object())
-TriangleCollision(renderer.get_render_object())
-KNN(renderer.get_render_object(), 50)
+CircleCollision()
+TriangleCollision()
+KNN(50)
 print(renderer.render_objects)
-print(renderer.get_render_object())
 
 @window.event
 def on_draw():
     window.clear()
     renderer.draw()
-    label.draw()
 
 pyglet.app.run()
 
