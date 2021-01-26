@@ -2,6 +2,7 @@ import json
 from MotionPlanningCode.Renderer import Renderer
 import pyglet
 import random
+import time
 
 def reciveData():
     with open('obstaclesCircles.json') as json_file:
@@ -51,7 +52,6 @@ def DotProduct(a,b):
     return a[0]*b[0]+a[1]*b[1]
 
 def TriangleCollision(render_objects):
-
     #Searshing for Circle
     for key1 in render_objects:
         value1 = render_objects[key1]
@@ -81,9 +81,8 @@ def TriangleCollision(render_objects):
                         pass
 
 def KNN(render_objects, K):
-
     all_points = []
-    # Searshing for Point
+    #Finding all points, putting them in all_points list
     for key2 in render_objects:
         value2 = render_objects[key2]
         if value2["type"] == "Point":
@@ -91,13 +90,14 @@ def KNN(render_objects, K):
             all_points.append(found_point)
 
     for x, check_point in enumerate(all_points): #Starting on point 1
-        distance_list = []
+        distance_and_point_list = []
         for point in all_points: #checking distance form point 1 compered to point n
-            distance_list.append(GetDistance(check_point, point))
-        distance_list = sorted(distance_list)
-        distance_list = distance_list[1:] #removing first element, which is 0, becuse compared to itself.
-        for point in distance_list[:K]:
-            renderer.add_render_object("Line", [check_point, point], "line" + str(x), [0, 0, 0])
+            distance_and_point_list.append([GetDistance(check_point, point), point])
+        distance_and_point_list = sorted(distance_and_point_list, key=lambda x: x[0])
+        distance_and_point_list = distance_and_point_list[1:] #removing first element, which is 0, becuse compared to itself.
+        distance_and_point_list = distance_and_point_list[:K] #Just the 5 first points
+        for x, point in enumerate(distance_and_point_list):
+            renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x), [0, 0, 0])
 
 
 
@@ -122,9 +122,11 @@ renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
 GenerateAllPoints(num=100)
 
 #print(renderer.get_render_object())
-#CircleCollision(renderer.get_render_object())
+CircleCollision(renderer.get_render_object())
 TriangleCollision(renderer.get_render_object())
-KNN(renderer.get_render_object(), 5)
+KNN(renderer.get_render_object(), 50)
+print(renderer.render_objects)
+print(renderer.get_render_object())
 
 @window.event
 def on_draw():
