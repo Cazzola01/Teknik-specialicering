@@ -108,6 +108,23 @@ def KNN(K):
         for y, point in enumerate(distance_and_point_list):
             renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0, 0, 0])
 
+def LineTriangelCollission():
+    '''
+    for segment
+        line1 = createLine(segment1)
+        for segment
+            line2 = createLine(segment2)
+            crosspoint = crosspoint(line1, line2)
+
+            if crosspoint[0] in range(segment[])
+
+
+
+
+
+    :return:
+    '''
+
 window = pyglet.window.Window(width=800, height=800)
 renderer = Renderer(window.width,window.height) #Lin window created
 
