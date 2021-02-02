@@ -101,12 +101,12 @@ def KNN(K):
     for x, check_point in enumerate(all_points): #Starting on point 1
         distance_and_point_list = []
         for point in all_points: #checking distance form point 1 compered to point n
-            distance_and_point_list.append([GetDistance(check_point, point), point])
+            distance_and_point_list.append([GetDistance(check_point, point), point]) #distance, position
         distance_and_point_list = sorted(distance_and_point_list, key=lambda x: x[0])
         distance_and_point_list = distance_and_point_list[1:] #removing first element, which is 0, becuse compared to itself.
         distance_and_point_list = distance_and_point_list[:K] #Just the 5 first points
-        for x, point in enumerate(distance_and_point_list):
-            renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x), [0, 0, 0])
+        for y, point in enumerate(distance_and_point_list):
+            renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0, 0, 0])
 
 window = pyglet.window.Window(width=800, height=800)
 renderer = Renderer(window.width,window.height) #Lin window created
@@ -123,7 +123,7 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-KNN(50)
+KNN(5)
 print(renderer.render_objects)
 
 @window.event
