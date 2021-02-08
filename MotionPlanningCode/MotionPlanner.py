@@ -125,6 +125,64 @@ def LineTriangelCollission():
     :return:
     '''
 
+def SegmentTriangelCollision():
+    #gettign and crating objects
+    render_objects = renderer.get_render_object()
+    triangle = render_objects["triangle500"]
+    renderer.add_render_object("Line", [(200,200), (400,400)], "line9999", [0, 0, 0])
+    line = render_objects["line9999"]
+
+    #Making Normal line
+    origin = line['vertices'][0]
+    lineVector = CreateVector(origin, line['vertices'][1])
+    lineNormal = GetNormalVector(lineVector)
+
+    #Making traingle vectors from origin
+    triangle_points = triangle['vertices']
+    A = triangle_points[0]
+    B = triangle_points[1]
+    C = triangle_points[2]
+    p1 = CreateVector(origin, A)
+    p2 = CreateVector(origin, B)
+    p3 = CreateVector(origin, C)
+
+    if (DotProduct(lineNormal, p1) >= 0) \
+            and (DotProduct(lineNormal, p2) >= 0) \
+            and (DotProduct(lineNormal, p3) >= 0) \
+            or (DotProduct(lineNormal, p1) <= 0) \
+            and (DotProduct(lineNormal, p2) <= 0) \
+            and (DotProduct(lineNormal, p3) <= 0):
+                print("line not colliding")
+
+    AB = CreateVector(A, B)
+    BC = CreateVector(B, C)
+    CA = CreateVector(C, A)
+
+    n1 = GetNormalVector(AB)
+    n2 = GetNormalVector(BC)
+    n3 = GetNormalVector(CA)
+
+    ALine0 = CreateVector(A, line['vertices'][0])
+    ALine1 = CreateVector(A, line['vertices'][1])
+    BLine0 = CreateVector(B, line['vertices'][0])
+    BLine1 = CreateVector(B, line['vertices'][1])
+    CLine0 = CreateVector(C, line['vertices'][0])
+    CLine1 = CreateVector(C, line['vertices'][1])
+
+    elif DotProduct(AB, ALine0) neg and DotProduct(AB, ALine1) pos
+
+
+
+
+
+
+
+
+
+
+
+
+
 window = pyglet.window.Window(width=800, height=800)
 renderer = Renderer(window.width,window.height) #Lin window created
 
