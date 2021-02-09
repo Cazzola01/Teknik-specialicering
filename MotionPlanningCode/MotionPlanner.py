@@ -126,18 +126,19 @@ def LineTriangelCollission():
     '''
 
 def SegmentTriangelCollision():
-    #gettign and crating objects
+    #getting and creating objects
     render_objects = renderer.get_render_object()
     triangle = render_objects["triangle500"]
     renderer.add_render_object("Line", [(200,200), (400,400)], "line9999", [0, 0, 0])
     line = render_objects["line9999"]
 
+    #1. Seeing if points are on the right/left side of the segment.
     #Making Normal line
     origin = line['vertices'][0]
     lineVector = CreateVector(origin, line['vertices'][1])
     lineNormal = GetNormalVector(lineVector)
 
-    #Making traingle vectors from origin
+    #Making triangle vectors from origin
     triangle_points = triangle['vertices']
     A = triangle_points[0]
     B = triangle_points[1]
