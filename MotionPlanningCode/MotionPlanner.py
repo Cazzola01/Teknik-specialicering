@@ -128,32 +128,25 @@ def LineTriangelCollission():
 def SegmentTriangelCollision():
     #getting and creating objects
     render_objects = renderer.get_render_object()
-    triangle = render_objects["triangle500"]
-    renderer.add_render_object("Line", [(200,200), (400,400)], "line9999", [0, 0, 0])
+
+    renderer.add_render_object("Line", [(500,200+320), (800,800-300)], "line9999", [0, 0, 0])
     line = render_objects["line9999"]
+    triangle = render_objects["triangle500"]
 
     #1. Seeing if points are on the right/left side of the segment.
     #Making Normal line
-    origin = line['vertices'][0]
-    lineVector = CreateVector(origin, line['vertices'][1])
+    oneSegmentPoint = line['vertices'][0]
+    lineVector = CreateVector(oneSegmentPoint, line['vertices'][1])
     lineNormal = GetNormalVector(lineVector)
 
-    #Making triangle vectors from origin
+    #Making triangle vectors from origin, seeing if 90 degress
     triangle_points = triangle['vertices']
     A = triangle_points[0]
     B = triangle_points[1]
     C = triangle_points[2]
-    p1 = CreateVector(origin, A)
-    p2 = CreateVector(origin, B)
-    p3 = CreateVector(origin, C)
-
-    if (DotProduct(lineNormal, p1) >= 0) \
-            and (DotProduct(lineNormal, p2) >= 0) \
-            and (DotProduct(lineNormal, p3) >= 0) \
-            or (DotProduct(lineNormal, p1) <= 0) \
-            and (DotProduct(lineNormal, p2) <= 0) \
-            and (DotProduct(lineNormal, p3) <= 0):
-                print("line not colliding")
+    p1 = CreateVector(oneSegmentPoint, A)
+    p2 = CreateVector(oneSegmentPoint, B)
+    p3 = CreateVector(oneSegmentPoint, C)
 
     AB = CreateVector(A, B)
     BC = CreateVector(B, C)
@@ -170,9 +163,21 @@ def SegmentTriangelCollision():
     CLine0 = CreateVector(C, line['vertices'][0])
     CLine1 = CreateVector(C, line['vertices'][1])
 
-    elif DotProduct(AB, ALine0) neg and DotProduct(AB, ALine1) pos
-
-
+    if (DotProduct(lineNormal, p1) >= 0) \
+            and (DotProduct(lineNormal, p2) >= 0) \
+            and (DotProduct(lineNormal, p3) >= 0) \
+            or (DotProduct(lineNormal, p1) <= 0) \
+            and (DotProduct(lineNormal, p2) <= 0) \
+            and (DotProduct(lineNormal, p3) <= 0):
+                print("line not colliding")
+    elif (DotProduct(n1, ALine0) < 0 and DotProduct(n1, ALine1) > 0) or (DotProduct(n1, ALine0) > 0 and DotProduct(n1, ALine1) < 0):
+        print("colliding!")
+    elif (DotProduct(n2, BLine0) < 0 and DotProduct(n2, BLine1) > 0) or (DotProduct(n2, BLine0) > 0 and DotProduct(n2, BLine1) < 0):
+        print("colliding!")
+    elif (DotProduct(n3, CLine0) < 0 and DotProduct(n3, CLine1) > 0) or (DotProduct(n3, CLine0) > 0 and DotProduct(n3, CLine1) < 0):
+        print("colliding!")
+    else:
+        print("not colliding!")
 
 
 
@@ -199,8 +204,8 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-KNN(5)
-print(renderer.render_objects)
+#KNN(5)
+SegmentTriangelCollision()
 
 @window.event
 def on_draw():
