@@ -108,30 +108,22 @@ def KNN(K):
         for y, point in enumerate(distance_and_point_list):
             renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0, 0, 0])
 
-def LineTriangelCollission():
-    '''
-    for segment
-        line1 = createLine(segment1)
-        for segment
-            line2 = createLine(segment2)
-            crosspoint = crosspoint(line1, line2)
-
-            if crosspoint[0] in range(segment[])
-
-
-
-
-
-    :return:
-    '''
-
 def SegmentTriangelCollision():
-    #getting and creating objects
     render_objects = renderer.get_render_object()
+    remove_keys = []
+    for key1 in render_objects:
+        value1 = render_objects[key1]
+        if value1["type"] == "Triangle":
+            # Searshing for Point
+            for key2 in render_objects:
+                value2 = render_objects[key2]
+                if value2["type"] == "Line":
+                    if lineSegmentCheck(value2, value1):
+                        remove_keys.append(key2)
+    for key in remove_keys:
+        renderer.remove_render_object(key)
 
-    renderer.add_render_object("Line", [(500,200+320), (800,800-300)], "line9999", [0, 0, 0])
-    line = render_objects["line9999"]
-    triangle = render_objects["triangle500"]
+def lineSegmentCheck(line, triangle):
 
     #1. Seeing if points are on the right/left side of the segment.
     #Making Normal line
@@ -169,24 +161,15 @@ def SegmentTriangelCollision():
             or (DotProduct(lineNormal, p1) <= 0) \
             and (DotProduct(lineNormal, p2) <= 0) \
             and (DotProduct(lineNormal, p3) <= 0):
-                print("line not colliding")
+                return False
     elif (DotProduct(n1, ALine0) < 0 and DotProduct(n1, ALine1) > 0) or (DotProduct(n1, ALine0) > 0 and DotProduct(n1, ALine1) < 0):
-        print("colliding!")
+        return True
     elif (DotProduct(n2, BLine0) < 0 and DotProduct(n2, BLine1) > 0) or (DotProduct(n2, BLine0) > 0 and DotProduct(n2, BLine1) < 0):
-        print("colliding!")
+        return True
     elif (DotProduct(n3, CLine0) < 0 and DotProduct(n3, CLine1) > 0) or (DotProduct(n3, CLine0) > 0 and DotProduct(n3, CLine1) < 0):
-        print("colliding!")
+        return True
     else:
-        print("not colliding!")
-
-
-
-
-
-
-
-
-
+        return False
 
 
 window = pyglet.window.Window(width=800, height=800)
@@ -204,7 +187,7 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-#KNN(5)
+KNN(5)
 SegmentTriangelCollision()
 
 @window.event
