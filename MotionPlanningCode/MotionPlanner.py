@@ -171,6 +171,18 @@ def lineSegmentCheck(line, triangle):
     else:
         return False
 
+def lineCircleCollision():
+    render_objects = renderer.get_render_object()
+    line = render_objects["triangle500"]
+    circle = render_objects["circle"]
+
+    A = line['vertices'][0]
+    B = line['vertices'][1]
+    midPoint = circle['vertices'][0]
+    radius = circle["radius"]
+
+
+
 
 window = pyglet.window.Window(width=800, height=800)
 renderer = Renderer(window.width,window.height) #Lin window created
@@ -188,6 +200,7 @@ GenerateAllPoints(num=100)
 CircleCollision()
 TriangleCollision()
 KNN(5)
+print(renderer.render_objects)
 SegmentTriangelCollision()
 
 @window.event
