@@ -181,6 +181,26 @@ def lineCircleCollision():
     midPoint = circle['vertices'][0]
     radius = circle["radius"]
 
+    AB = CreateVector(A, B)
+    BA = CreateVector(B, A)
+    v1 = DotProduct(AB, GetNormalVector(AB))
+    v2 = DotProduct(BA, GetNormalVector(BA))
+
+    if v1 > 0 and v2 > 0:
+        pass #inside do the Ortogonalprojektionsvector.
+        linePoint2midPoint = CreateVector(A, midPoint)
+        Ortogonalprojection(AB, linePoint2midPoint)
+        len(Ortogonalprojection)
+        if len(Ortogonalprojection) < radius:
+            #collision!
+    elif v1 < 0:
+        len(midPoint, A)
+        if len(midPoint, A) < radius:
+            # collision!
+    elif v2 > 0:
+        len(midPoint, B)
+        if len(midPoint, B) < radius:
+            # collision!
 
 
 
