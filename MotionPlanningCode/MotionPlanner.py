@@ -55,6 +55,13 @@ def GetNormalVector(a):
 def DotProduct(a,b):
     return a[0]*b[0]+a[1]*b[1]
 
+def GetVectorLength(v):
+    distance = (v[0] ** 2 + v[1] ** 2) ** 0.5  # pytagoras sats
+    return distance
+
+def VectorMultiplication(v, k):
+    return [v[0]*k, v[1]*k]
+
 def TriangleCollision():
     render_objects = renderer.get_render_object()
     #Searshing for Circle
@@ -171,10 +178,15 @@ def lineSegmentCheck(line, triangle):
     else:
         return False
 
+def Ortogonalprojection(u, v):
+    k = DotProduct(u, v) / GetVectorLength(v)**2
+    return VectorMultiplication(v, k)
+
 def lineCircleCollision():
     render_objects = renderer.get_render_object()
-    line = render_objects["triangle500"]
-    circle = render_objects["circle"]
+    renderer.add_render_object("Line", [[100,400], [400,300]], "line9999", [0, 0, 0])
+    line = render_objects["line9999"]
+    circle = render_objects["circle1"]
 
     A = line['vertices'][0]
     B = line['vertices'][1]
@@ -183,24 +195,23 @@ def lineCircleCollision():
 
     AB = CreateVector(A, B)
     BA = CreateVector(B, A)
-    v1 = DotProduct(AB, GetNormalVector(AB))
-    v2 = DotProduct(BA, GetNormalVector(BA))
+    v1 = DotProduct(AB, CreateVector(A, midPoint))
+    v2 = DotProduct(BA, CreateVector(B, midPoint))
 
     if v1 > 0 and v2 > 0:
-        pass #inside do the Ortogonalprojektionsvector.
+        #inside do the Ortogonalprojektionsvector.
         linePoint2midPoint = CreateVector(A, midPoint)
-        Ortogonalprojection(AB, linePoint2midPoint)
-        len(Ortogonalprojection)
-        if len(Ortogonalprojection) < radius:
-            #collision!
+        o = Ortogonalprojection(AB, linePoint2midPoint)
+        aaaa = GetVectorLength(CreateVector(AB, o))
+
+        if aaaa < radius:
+            print("collision!")
     elif v1 < 0:
-        len(midPoint, A)
-        if len(midPoint, A) < radius:
-            # collision!
-    elif v2 > 0:
-        len(midPoint, B)
-        if len(midPoint, B) < radius:
-            # collision!
+        if GetDistance(midPoint, B) < radius:
+            print("collision!")
+    elif v2 < 0:
+        if GetDistance(midPoint, A) < radius:
+            print("collision!")
 
 
 
@@ -219,10 +230,11 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-KNN(5)
-print(renderer.render_objects)
-SegmentTriangelCollision()
+#KNN(5)
 
+SegmentTriangelCollision()
+lineCircleCollision()
+print(renderer.render_objects)
 @window.event
 def on_draw():
     window.clear()
