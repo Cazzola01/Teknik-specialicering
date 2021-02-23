@@ -182,11 +182,21 @@ def Ortogonalprojection(u, v):
     k = DotProduct(u, v) / GetVectorLength(v)**2
     return VectorMultiplication(v, k)
 
-def lineCircleCollision():
+def SegmentCircleCollision():
     render_objects = renderer.get_render_object()
-    renderer.add_render_object("Line", [[100,400], [400,300]], "line9999", [0, 0, 0])
-    line = render_objects["line9999"]
-    circle = render_objects["circle1"]
+    remove_keys = []
+    for key1 in render_objects:
+        value1 = render_objects[key1]
+        if value1["type"] == "Circle":
+            # Searshing for Point
+            for key2 in render_objects:
+                value2 = render_objects[key2]
+                if value2["type"] == "Line":
+                    if SegmentCircleCollisionCheck(value2, value1):
+                        remove_keys.append(key2)
+    for key in remove_keys:
+        renderer.remove_render_object(key)
+def SegmentCircleCollisionCheck(line, circle):
 
     A = line['vertices'][0]
     B = line['vertices'][1]
@@ -201,17 +211,26 @@ def lineCircleCollision():
     if v1 > 0 and v2 > 0:
         #inside do the Ortogonalprojektionsvector.
         linePoint2midPoint = CreateVector(A, midPoint)
-        o = Ortogonalprojection(AB, linePoint2midPoint)
-        aaaa = GetVectorLength(CreateVector(AB, o))
+        o = Ortogonalprojection(linePoint2midPoint, AB)
+        distanceSegmnetCircle = GetVectorLength(CreateVector(linePoint2midPoint, o))
 
-        if aaaa < radius:
-            print("collision!")
+        if distanceSegmnetCircle < radius:
+            return True
     elif v1 < 0:
         if GetDistance(midPoint, B) < radius:
-            print("collision!")
+            return True
     elif v2 < 0:
         if GetDistance(midPoint, A) < radius:
-            print("collision!")
+            return True
+
+def AStar():
+    start = [500, 500]
+    stop = [600, 800]
+    
+    current_pos = start
+    points = []
+    for line in lines:
+        cost = 
 
 
 
@@ -230,10 +249,10 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-#KNN(5)
+KNN(5)
 
 SegmentTriangelCollision()
-lineCircleCollision()
+SegmentCircleCollision()
 print(renderer.render_objects)
 @window.event
 def on_draw():
