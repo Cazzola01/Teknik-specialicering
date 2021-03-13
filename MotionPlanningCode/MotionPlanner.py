@@ -223,14 +223,49 @@ def SegmentCircleCollisionCheck(line, circle):
         if GetDistance(midPoint, A) < radius:
             return True
 
-def AStar():
-    start = [500, 500]
-    stop = [600, 800]
-    
-    current_pos = start
-    points = []
-    for line in lines:
-        cost = 
+def AddNeigborToPoint():
+    render_objects = renderer.get_render_object()
+    for key1 in render_objects:
+        point = render_objects[key1]
+        if point["type"] == "Point":
+            # Searshing for Point
+            for key2 in render_objects:
+                line = render_objects[key2]
+                if line["type"] == "Line":
+                    if point['vertices'][0] == line['vertices'][0]: #The lines first point is at the same position
+                        point["neighbors"].append(line['vertices'][1]) #The other point on the line.
+
+
+
+def AStar(start = "point1", goal = "point2", h = GetDistance()):
+    render_objects = renderer.get_render_object()
+
+    all_points_keys = []
+    for point_key in render_objects:
+        point = render_objects[point_key]
+        if point["type"] == "Point":
+            all_points_keys.append(point_key)
+
+    openSet = [start]
+    cameFrom = {} #Lagrar a:b, när input a -> returnera b
+
+    gScore = {} #{b:5} Den totala kostnaden att komma till b, inte garanterat.
+    fScore = {} #how short a path from start to finish
+    for point_key in render_objects:
+        point = render_objects[point_key]
+        if point["type"] == "Point":
+            gScore[point_key] = float('inf')
+            fScore[point_key] = float('inf')
+
+    while openSet is not []:
+        current = min(fScore, key=fScore.get)
+        if current == goal:
+            pass
+
+
+
+
+
 
 
 
@@ -249,10 +284,11 @@ GenerateAllPoints(num=100)
 #print(renderer.get_render_object())
 CircleCollision()
 TriangleCollision()
-KNN(5)
+KNN(5) #Spara punkt och denns grannar. [punkt, [grannar]]
 
 SegmentTriangelCollision()
 SegmentCircleCollision()
+AddNeigborToPoint()
 print(renderer.render_objects)
 @window.event
 def on_draw():

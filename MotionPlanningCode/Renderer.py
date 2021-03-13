@@ -33,6 +33,7 @@ class Renderer():
                                                    vertices[0], vertices[2], vertices[3]]
         else:
             self.render_objects[id]["vertices"] = vertices
+            self.render_objects[id]["neighbors"] = [] #neigburs for Astar
         self.render_objects[id]["color"] = color
 
     def remove_render_object(self, id):
