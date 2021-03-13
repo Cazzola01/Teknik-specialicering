@@ -237,25 +237,25 @@ def AddNeigborToPoint():
 
 
 
-def AStar(start = "point1", goal = "point2", h = GetDistance()):
+def AStar(start = "point1", goal = "point2", h = GetDistance):
     render_objects = renderer.get_render_object()
 
-    all_points_keys = []
+    all_point_values = []
     for point_key in render_objects:
         point = render_objects[point_key]
         if point["type"] == "Point":
-            all_points_keys.append(point_key)
+            all_point_values.append(point['vertices'][0])
 
     openSet = [start]
-    cameFrom = {} #Lagrar a:b, när input a -> returnera b
+    cameFrom = [] #List positions in order
 
     gScore = {} #{b:5} Den totala kostnaden att komma till b, inte garanterat.
     fScore = {} #how short a path from start to finish
     for point_key in render_objects:
         point = render_objects[point_key]
         if point["type"] == "Point":
-            gScore[point_key] = float('inf')
-            fScore[point_key] = float('inf')
+            gScore[point['vertices'][0]] = float('inf')
+            fScore[point['vertices'][0]] = float('inf')
 
     while openSet is not []:
         current = min(fScore, key=fScore.get)
@@ -289,6 +289,7 @@ KNN(5) #Spara punkt och denns grannar. [punkt, [grannar]]
 SegmentTriangelCollision()
 SegmentCircleCollision()
 AddNeigborToPoint()
+AStar()
 print(renderer.render_objects)
 @window.event
 def on_draw():
