@@ -235,36 +235,54 @@ def AddNeigborToPoint():
                     if point['vertices'][0] == line['vertices'][0]: #The lines first point is at the same position
                         point["neighbors"].append(line['vertices'][1]) #The other point on the line.
 
+def reconstruct_path(cameFrom, current):
+    total_path = [current]
+    while current in cameFrom.Keys: #loop every cameFrom
+        current = cameFrom[current]
+        total_path.insert(0, current) #Add element on fist position
+    return total_path
 
 
-def AStar(start = "point1", goal = "point2", h = GetDistance):
+def AStar(start = (100,100), goal = (700,400), h = GetDistance):
+
+
     render_objects = renderer.get_render_object()
 
-    all_point_values = []
+    node_and_neighbors = {} #pointpos: [neighborpos, neighborpos] (700,700): [(600,600),(500,500)]
     for point_key in render_objects:
         point = render_objects[point_key]
         if point["type"] == "Point":
-            all_point_values.append(point['vertices'][0])
+            node_and_neighbors[point['vertices'][0]] = point["neighbors"]
+
+    #Just for Debug
+    start = list(node_and_neighbors.keys())[0]
+    goal = list(node_and_neighbors.keys())[-1]
 
     openSet = [start]
     cameFrom = [] #List positions in order
 
     gScore = {} #{b:5} Den totala kostnaden att komma till b, inte garanterat.
     fScore = {} #how short a path from start to finish
-    for point_key in render_objects:
-        point = render_objects[point_key]
-        if point["type"] == "Point":
-            gScore[point['vertices'][0]] = float('inf')
-            fScore[point['vertices'][0]] = float('inf')
+    for point_key in node_and_neighbors:
+            gScore[point_key] = float('inf')
+            fScore[point_key] = float('inf')
+
+    gScore[start] = 0
+    fScore[start] = h(start, goal)
 
     while openSet is not []:
         current = min(fScore, key=fScore.get)
         if current == goal:
-            pass
-
-
-
-
+            return reconstruct_path(cameFrom, current)
+        for neighbor in node_and_neighbors[current]:
+            tentative_gScore = gScore[current] + h(current, neighbor)
+            if tentative_gScore < gScore[neighbor]:
+                cameFrom[neighbor] = current
+                gScore[neighbor] = tentative_gScore
+                fScore[neighbor] = gScore[neighbor] + h(neighbor, goal)
+                if neighbor not in openSet:
+                    openSet.append(neighbor)
+    return "failure"
 
 
 
