@@ -237,7 +237,7 @@ def AddNeigborToPoint():
 
 def reconstruct_path(cameFrom, current):
     total_path = [current]
-    while current in cameFrom.Keys: #loop every cameFrom
+    while current in cameFrom.keys(): #loop every cameFrom
         current = cameFrom[current]
         total_path.insert(0, current) #Add element on fist position
     return total_path
@@ -259,7 +259,7 @@ def AStar(start = (100,100), goal = (700,400), h = GetDistance):
     goal = list(node_and_neighbors.keys())[-1]
 
     openSet = [start]
-    cameFrom = [] #List positions in order
+    cameFrom = {} #List positions in order
 
     gScore = {} #{b:5} Den totala kostnaden att komma till b, inte garanterat.
     fScore = {} #how short a path from start to finish
@@ -270,10 +270,15 @@ def AStar(start = (100,100), goal = (700,400), h = GetDistance):
     gScore[start] = 0
     fScore[start] = h(start, goal)
 
-    while openSet is not []:
-        current = min(fScore, key=fScore.get)
+
+    while openSet:
+        #Smallest value in openset
+        current = min(openSet, key=fScore.get)
+
         if current == goal:
             return reconstruct_path(cameFrom, current)
+
+        openSet.remove(current)
         for neighbor in node_and_neighbors[current]:
             tentative_gScore = gScore[current] + h(current, neighbor)
             if tentative_gScore < gScore[neighbor]:
@@ -307,7 +312,7 @@ KNN(5) #Spara punkt och denns grannar. [punkt, [grannar]]
 SegmentTriangelCollision()
 SegmentCircleCollision()
 AddNeigborToPoint()
-AStar()
+print(AStar())
 print(renderer.render_objects)
 @window.event
 def on_draw():
