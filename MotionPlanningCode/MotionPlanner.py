@@ -243,7 +243,7 @@ def reconstruct_path(cameFrom, current):
     return total_path
 
 
-def AStar(start = (100,100), goal = (700,400), h = GetDistance):
+def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
 
 
     render_objects = renderer.get_render_object()
@@ -270,7 +270,6 @@ def AStar(start = (100,100), goal = (700,400), h = GetDistance):
     gScore[start] = 0
     fScore[start] = h(start, goal)
 
-
     while openSet:
         #Smallest value in openset
         current = min(openSet, key=fScore.get)
@@ -288,6 +287,11 @@ def AStar(start = (100,100), goal = (700,400), h = GetDistance):
                 if neighbor not in openSet:
                     openSet.append(neighbor)
     return "failure"
+
+def MakePathLines(path):
+    for x in range(len(path) - 1):
+        renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0, 1, 0])
+        #pass
 
 
 
@@ -312,7 +316,9 @@ KNN(5) #Spara punkt och denns grannar. [punkt, [grannar]]
 SegmentTriangelCollision()
 SegmentCircleCollision()
 AddNeigborToPoint()
-print(AStar())
+path = AStar()
+print(path)
+MakePathLines(path)
 print(renderer.render_objects)
 @window.event
 def on_draw():
