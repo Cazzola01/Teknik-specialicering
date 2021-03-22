@@ -11,8 +11,8 @@ def reciveData():
 
 def GenerateAllPoints(num=100):
     for x in range(num):
-        random_x = random.randint(0, 800)
-        random_y = random.randint(0, 800)
+        random_x = random.randint(0, 700)
+        random_y = random.randint(0, 700)
         tuplePoint = (random_x, random_y)
         id = "point" + str(x)
         renderer.add_render_object("Point", [tuplePoint], id, [0, 0, 0])
@@ -234,6 +234,8 @@ def AddNeigborToPoint():
                 if line["type"] == "Line":
                     if point['vertices'][0] == line['vertices'][0]: #The lines first point is at the same position
                         point["neighbors"].append(line['vertices'][1]) #The other point on the line.
+                    elif point['vertices'][0] == line['vertices'][1]:  # The lines first point is at the same position
+                        point["neighbors"].append(line['vertices'][0])  # The other point on the line.
 
 def reconstruct_path(cameFrom, current):
     total_path = [current]
@@ -255,8 +257,11 @@ def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
             node_and_neighbors[point['vertices'][0]] = point["neighbors"]
 
     #Just for Debug
-    start = list(node_and_neighbors.keys())[0]
-    goal = list(node_and_neighbors.keys())[-1]
+    #start = list(node_and_neighbors.keys())[0]
+    #goal = list(node_and_neighbors.keys())[-1]
+    start = (700, 701)
+    goal = (693, 83)
+    print("start:", start, "goal:", goal)
 
     openSet = [start]
     cameFrom = {} #List positions in order
@@ -286,7 +291,7 @@ def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
                 fScore[neighbor] = gScore[neighbor] + h(neighbor, goal)
                 if neighbor not in openSet:
                     openSet.append(neighbor)
-    return "failure"
+    return []
 
 def MakePathLines(path):
     for x in range(len(path) - 1):
@@ -296,17 +301,18 @@ def MakePathLines(path):
 
 
 
-window = pyglet.window.Window(width=800, height=800)
+window = pyglet.window.Window(width=800, height=710)
 renderer = Renderer(window.width,window.height) #Lin window created
 
 #type, vertices, id, color
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
 renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
 #renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle1", [1,0,0])
-renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle500", [1, 0, 0])
-renderer.add_render_object("Point", [(700, 701)], "point500", [0, 0, 0])
+renderer.add_render_object("Triangle", [[300, 300], [700, 300], [600, 600]], "triangle500", [1, 0, 0])
+renderer.add_render_object("Point", [(700, 701)], "startpoint", [0, 0, 1])
+renderer.add_render_object("Point", [(693, 83)], "goalpoint", [0, 0, 1])
 
-GenerateAllPoints(num=100)
+GenerateAllPoints(num=1000)
 
 #print(renderer.get_render_object())
 CircleCollision()
