@@ -2,7 +2,7 @@ import json
 from MotionPlanningCode.Renderer import Renderer
 import pyglet
 import random
-import time
+from pyglet.window import key, mouse
 
 def reciveData():
     with open('obstaclesCircles.json') as json_file:
@@ -113,7 +113,7 @@ def KNN(K):
         distance_and_point_list = distance_and_point_list[1:] #removing first element, which is 0, becuse compared to itself.
         distance_and_point_list = distance_and_point_list[:K] #Just the 5 first points
         for y, point in enumerate(distance_and_point_list):
-            renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0, 0, 0])
+            renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0.8, 0.8, 0.8])
 
 def SegmentTriangelCollision():
     render_objects = renderer.get_render_object()
@@ -245,7 +245,7 @@ def reconstruct_path(cameFrom, current):
     return total_path
 
 
-def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
+def AStar(start, goal, h=GetDistance):
 
 
     render_objects = renderer.get_render_object()
@@ -259,8 +259,6 @@ def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
     #Just for Debug
     #start = list(node_and_neighbors.keys())[0]
     #goal = list(node_and_neighbors.keys())[-1]
-    start = (700, 701)
-    goal = (693, 83)
     print("start:", start, "goal:", goal)
 
     openSet = [start]
@@ -295,7 +293,7 @@ def AStar(start=(100, 100), goal=(700, 400), h=GetDistance):
 
 def MakePathLines(path):
     for x in range(len(path) - 1):
-        renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0, 1, 0])
+        renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0,0, 1])
         #pass
 
 
@@ -307,29 +305,66 @@ renderer = Renderer(window.width,window.height) #Lin window created
 #type, vertices, id, color
 renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
 renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
-#renderer.add_render_object("Triangle", [[300, 300], [700, 300], [700, 700]], "triangle1", [1,0,0])
 renderer.add_render_object("Triangle", [[300, 300], [700, 300], [600, 600]], "triangle500", [1, 0, 0])
-renderer.add_render_object("Point", [(700, 701)], "startpoint", [0, 0, 1])
-renderer.add_render_object("Point", [(693, 83)], "goalpoint", [0, 0, 1])
 
-GenerateAllPoints(num=1000)
-
-#print(renderer.get_render_object())
+num_points = 100
+GenerateAllPoints(num=num_points)
 CircleCollision()
 TriangleCollision()
-KNN(5) #Spara punkt och denns grannar. [punkt, [grannar]]
 
-SegmentTriangelCollision()
-SegmentCircleCollision()
-AddNeigborToPoint()
-path = AStar()
-print(path)
-MakePathLines(path)
-print(renderer.render_objects)
+start_point = ()
+end_point = ()
+click_num = 0
+
 @window.event
 def on_draw():
     window.clear()
     renderer.draw()
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    global num_points, start_point, end_point, click_num
+    if button == pyglet.window.mouse.LEFT and click_num == 0:
+        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(num_points), [0, 0, 1])
+        start_point = (x, y)
+
+        num_points += 1
+        click_num += 1
+
+    elif button == pyglet.window.mouse.LEFT and click_num == 1:
+        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(num_points), [1, 0, 0])
+        end_point = (x, y)
+
+        num_points += 1
+        click_num = 0
+    CircleCollision()
+    TriangleCollision()
+
+@window.event
+def on_key_press(symbol, modifiers):
+    global renderer
+    render_objects = renderer.render_objects
+    remove_keys = []
+
+    if symbol == key.SPACE:
+        #Remove all lines
+        for key1 in render_objects:
+            point = render_objects[key1]
+            if point["type"] == "Line":
+                remove_keys.append(key1)
+    for key1 in remove_keys:
+        renderer.remove_render_object(key1)
+    CircleCollision()
+    TriangleCollision()
+    KNN(5)  # Spara punkt och denns grannar. [punkt, [grannar]]
+    SegmentTriangelCollision()
+    SegmentCircleCollision()
+    AddNeigborToPoint()
+    path = AStar(start=start_point, goal=end_point)
+    print(path)
+    MakePathLines(path)
+
+
 
 pyglet.app.run()
 
