@@ -4,13 +4,8 @@ import pyglet
 import random
 from pyglet.window import key, mouse
 
-def reciveData():
-    with open('obstaclesCircles.json') as json_file:
-        data = json.load(json_file)
-        # print(data)
-
 def GenerateAllPoints(num=100):
-    for x in range(num):
+    for x in range(num): #"n" is "num". O(n)
         random_x = random.randint(0, 700)
         random_y = random.randint(0, 700)
         tuplePoint = (random_x, random_y)
@@ -28,17 +23,17 @@ def GetDistance(vector1, vector2):
     return distance
 
 def CircleCollision():
-    #Searshing for Circle
     render_objects = renderer.get_render_object()
     remove_keys = []
+    #Every Circle is looping through every Point. "n" is number of circles, "m" is number of points. O(nm)
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Circle":
-    #Searshing for Point
+            #Searshing for Point
             for key2 in render_objects:
                 value2 = render_objects[key2]
                 if value2["type"] == "Point":
-    #Calculating distance
+                    #Calculating distance
                     distance = GetDistance(value1['vertices'][0], value2['vertices'][0]) #GetDistance(origo_Circle, origo_Point)
                     circle_radius = value1['radius']
                     if distance < circle_radius:
@@ -64,12 +59,12 @@ def VectorMultiplication(v, k):
 
 def TriangleCollision():
     render_objects = renderer.get_render_object()
-    #Searshing for Circle
     remove_keys = []
+    # Every Triangle is looping through every Point. "n" is number of triangles, "m" is number of points. O(nm)
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Triangle":
-    #Searshing for Point
+            #Searshing for Point
             for key2 in render_objects:
                 value2 = render_objects[key2]
                 if value2["type"] == "Point":
@@ -105,9 +100,9 @@ def KNN(K):
             found_point = value2['vertices'][0]
             all_points.append(found_point)
 
-    for x, check_point in enumerate(all_points): #Starting on point 1
+    for x, check_point in enumerate(all_points): # "n" is number of points. Loop in a loop. O(n^2)
         distance_and_point_list = []
-        for point in all_points: #checking distance form point 1 compered to point n
+        for point in all_points:  # checking distance form point 1 compered to point n
             distance_and_point_list.append([GetDistance(check_point, point), point]) #distance, position
         distance_and_point_list = sorted(distance_and_point_list, key=lambda x: x[0])
         distance_and_point_list = distance_and_point_list[1:] #removing first element, which is 0, becuse compared to itself.
@@ -118,7 +113,7 @@ def KNN(K):
 def SegmentTriangelCollision():
     render_objects = renderer.get_render_object()
     remove_keys = []
-    for key1 in render_objects:
+    for key1 in render_objects:  # "n" is number of triangles. "m" is number of Lines. O(nm)
         value1 = render_objects[key1]
         if value1["type"] == "Triangle":
             # Searshing for Point
@@ -185,7 +180,7 @@ def Ortogonalprojection(u, v):
 def SegmentCircleCollision():
     render_objects = renderer.get_render_object()
     remove_keys = []
-    for key1 in render_objects:
+    for key1 in render_objects: # "n" is number of circles. "m" is number of Lines. O(nm)
         value1 = render_objects[key1]
         if value1["type"] == "Circle":
             # Searshing for Point
@@ -196,6 +191,7 @@ def SegmentCircleCollision():
                         remove_keys.append(key2)
     for key in remove_keys:
         renderer.remove_render_object(key)
+
 def SegmentCircleCollisionCheck(line, circle):
 
     A = line['vertices'][0]
@@ -223,9 +219,9 @@ def SegmentCircleCollisionCheck(line, circle):
         if GetDistance(midPoint, A) < radius:
             return True
 
-def AddNeigborToPoint():
+def AddNeigborToPoint(): # Every point recives its neighboring points. For AStar
     render_objects = renderer.get_render_object()
-    for key1 in render_objects:
+    for key1 in render_objects: # "n" is number of points. "m" is number of Lines. O(nm)
         point = render_objects[key1]
         if point["type"] == "Point":
             # Searshing for Point
@@ -246,8 +242,6 @@ def reconstruct_path(cameFrom, current):
 
 
 def AStar(start, goal, h=GetDistance):
-
-
     render_objects = renderer.get_render_object()
 
     node_and_neighbors = {} #pointpos: [neighborpos, neighborpos] (700,700): [(600,600),(500,500)]
@@ -273,7 +267,7 @@ def AStar(start, goal, h=GetDistance):
     gScore[start] = 0
     fScore[start] = h(start, goal)
 
-    while openSet:
+    while openSet:  # "n" is number of points. "m" is number of neighbors/connections/KNN. O(nm)
         #Smallest value in openset
         current = min(openSet, key=fScore.get)
 
@@ -291,30 +285,40 @@ def AStar(start, goal, h=GetDistance):
                     openSet.append(neighbor)
     return []
 
-def MakePathLines(path):
+def MakePathLines(path):  # Ploting the path lines
     for x in range(len(path) - 1):
-        renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0,0, 1])
-        #pass
+        renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0, 0, 1])
 
 
+if __name__ == '__main__':
+    #Loading settings from Json file
+    with open('obstaclesCircles.json') as json_file:
+        data = json.load(json_file)
 
+    #Create window
+    window = pyglet.window.Window(width=data["setup"]["width"], height=data["setup"]["height"])
+    renderer = Renderer(window.width, window.height)
 
-window = pyglet.window.Window(width=800, height=710)
-renderer = Renderer(window.width,window.height) #Lin window created
+    #Add Obsticles from file. "n" is number of obsticles. O(n)
+    for key1 in data["obstacles"]:
+        value1 = data["obstacles"][key1]
+        if value1["type"] == "Circle":
+            # type, vertices, id, color
+            renderer.add_render_object(value1["type"], [tuple(value1["center"]), value1["radius"]], value1["id"], [1, 0, 0])
+        elif value1["type"] == "Triangle":
+            renderer.add_render_object(value1["type"], value1["vertices"], value1["id"], [1, 0, 0])
+        elif value1["type"] == "Quad":
+            renderer.add_render_object(value1["type"], value1["vertices"], value1["id"], [1, 0, 0])
 
-#type, vertices, id, color
-renderer.add_render_object("Circle", [(200,600), 100], "circle", [1,0,0])
-renderer.add_render_object("Circle", [(200,300), 100], "circle1", [1,0,0])
-renderer.add_render_object("Triangle", [[300, 300], [700, 300], [600, 600]], "triangle500", [1, 0, 0])
+    #Adding random points and checking for collision
+    GenerateAllPoints(num=data["setup"]["numSamples"])
+    CircleCollision()
+    TriangleCollision()
 
-num_points = 100
-GenerateAllPoints(num=num_points)
-CircleCollision()
-TriangleCollision()
-
-start_point = ()
-end_point = ()
-click_num = 0
+    #Variables for adding mouse points
+    start_point = ()
+    end_point = ()
+    click_num = 0
 
 @window.event
 def on_draw():
@@ -324,19 +328,22 @@ def on_draw():
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     global num_points, start_point, end_point, click_num
+    #Placing start_point
     if button == pyglet.window.mouse.LEFT and click_num == 0:
-        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(num_points), [0, 0, 1])
+        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(data["setup"]["numSamples"]), [0, 0, 1])
         start_point = (x, y)
 
-        num_points += 1
+        data["setup"]["numSamples"] += 1
         click_num += 1
 
+    # Placing end_point
     elif button == pyglet.window.mouse.LEFT and click_num == 1:
-        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(num_points), [1, 0, 0])
+        renderer.add_render_object("Point", [(x, y)], "startpoint" + str(data["setup"]["numSamples"]), [1, 0, 0])
         end_point = (x, y)
 
-        num_points += 1
+        data["setup"]["numSamples"] += 1
         click_num = 0
+    #Checking so new point not colliding
     CircleCollision()
     TriangleCollision()
 
@@ -347,8 +354,8 @@ def on_key_press(symbol, modifiers):
     remove_keys = []
 
     if symbol == key.SPACE:
-        #Remove all lines
-        for key1 in render_objects:
+        #Remove all old lines
+        for key1 in render_objects: #"n" is len(render_objects). O(n)
             point = render_objects[key1]
             if point["type"] == "Line":
                 remove_keys.append(key1)
@@ -356,14 +363,13 @@ def on_key_press(symbol, modifiers):
         renderer.remove_render_object(key1)
     CircleCollision()
     TriangleCollision()
-    KNN(5)  # Spara punkt och denns grannar. [punkt, [grannar]]
+    KNN(5)  # Saving point and its neigbors. [point, [neigbors]]
     SegmentTriangelCollision()
     SegmentCircleCollision()
-    AddNeigborToPoint()
+    AddNeigborToPoint() # Every point recives its neighboring points. For AStar
     path = AStar(start=start_point, goal=end_point)
     print(path)
-    MakePathLines(path)
-
+    MakePathLines(path) # Ploting the path lines
 
 
 pyglet.app.run()
