@@ -3,14 +3,20 @@ from MotionPlanningCode.Renderer import Renderer
 import pyglet
 import random
 from pyglet.window import key, mouse
+from concurrent.futures import ProcessPoolExecutor
+
+def PararellGeneratePoint(x):
+    random_x = random.randint(0, 700)
+    random_y = random.randint(0, 700)
+    tuplePoint = (random_x, random_y)
+    id = "point" + str(x)
+    #renderer.add_render_object("Point", [tuplePoint], id, [0, 0, 0])
 
 def GenerateAllPoints(num=100):
-    for x in range(num): #"n" is "num". O(n)
-        random_x = random.randint(0, 700)
-        random_y = random.randint(0, 700)
-        tuplePoint = (random_x, random_y)
-        id = "point" + str(x)
-        renderer.add_render_object("Point", [tuplePoint], id, [0, 0, 0])
+    with ProcessPoolExecutor() as executor:
+        for x in range(num): #"n" is "num". O(n)
+            executor.submit(PararellGeneratePoint, x)
+
 
 def GetDistance(vector1, vector2):
     x1 = vector1[0]
