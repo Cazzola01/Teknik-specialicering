@@ -4,7 +4,7 @@ import pyglet
 import random
 from pyglet.window import key, mouse
 
-def GenerateAllPoints(num=100):
+def GenerateAllPoints(num=100): #n is num value. O(n)
     for x in range(num): #"n" is "num". O(n)
         random_x = random.randint(0, 700)
         random_y = random.randint(0, 700)
@@ -12,7 +12,7 @@ def GenerateAllPoints(num=100):
         id = "point" + str(x)
         renderer.add_render_object("Point", [tuplePoint], id, [0, 0, 0])
 
-def GetDistance(vector1, vector2):
+def GetDistance(vector1, vector2): #Just calculation. O(1)
     x1 = vector1[0]
     y1 = vector1[1]
 
@@ -22,10 +22,10 @@ def GetDistance(vector1, vector2):
     distance = ((((x2 - x1) ** 2) + ((y2 - y1) ** 2)) ** 0.5) #pytagoras sats
     return distance
 
-def CircleCollision():
+def CircleCollision(): #Every Circle is looping through every Point. "n" is number of circles, "m" is number of points. O(nm)
     render_objects = renderer.get_render_object()
     remove_keys = []
-    #Every Circle is looping through every Point. "n" is number of circles, "m" is number of points. O(nm)
+
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Circle":
@@ -41,26 +41,26 @@ def CircleCollision():
     for key in remove_keys:
         renderer.remove_render_object(key)
 
-def CreateVector(a,b):
-    return [b[0]-a[0],b[1]-a[1]] #[x1-x2, y1-y2]
+def CreateVector(a,b): #O(1)
+    return [b[0]-a[0], b[1]-a[1]] #[x1-x2, y1-y2]
 
-def GetNormalVector(a):
+def GetNormalVector(a): #O(1)
     return [-a[1], a[0]] #[-y,x]
 
-def DotProduct(a,b):
+def DotProduct(a,b): #O(1)
     return a[0]*b[0]+a[1]*b[1]
 
-def GetVectorLength(v):
+def GetVectorLength(v): #O(1)
     distance = (v[0] ** 2 + v[1] ** 2) ** 0.5  # pytagoras sats
     return distance
 
-def VectorMultiplication(v, k):
+def VectorMultiplication(v, k): #O(1)
     return [v[0]*k, v[1]*k]
 
-def TriangleCollision():
+def TriangleCollision(): # Every Triangle is looping through every Point. "n" is number of triangles, "m" is number of points. O(nm)
     render_objects = renderer.get_render_object()
     remove_keys = []
-    # Every Triangle is looping through every Point. "n" is number of triangles, "m" is number of points. O(nm)
+
     for key1 in render_objects:
         value1 = render_objects[key1]
         if value1["type"] == "Triangle":
