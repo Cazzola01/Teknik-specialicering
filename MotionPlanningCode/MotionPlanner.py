@@ -90,7 +90,7 @@ def TriangleCollision(): # Every Triangle is looping through every Point. "n" is
     for key in remove_keys:
         renderer.remove_render_object(key)
 
-def KNN(K):
+def KNN(K): #n is number of points. O(n^2)
     render_objects = renderer.get_render_object()
     all_points = []
     #Finding all points, putting them in all_points list
@@ -110,7 +110,7 @@ def KNN(K):
         for y, point in enumerate(distance_and_point_list):
             renderer.add_render_object("Line", [check_point, point[1]], "line" + str(x) + str(y), [0.8, 0.8, 0.8])
 
-def SegmentTriangelCollision():
+def SegmentTriangelCollision(): # Every Triangle is looping through every Line. "n" is number of triangles, "m" is number of lines. O(nm)
     render_objects = renderer.get_render_object()
     remove_keys = []
     for key1 in render_objects:  # "n" is number of triangles. "m" is number of Lines. O(nm)
@@ -125,7 +125,7 @@ def SegmentTriangelCollision():
     for key in remove_keys:
         renderer.remove_render_object(key)
 
-def lineSegmentCheck(line, triangle):
+def lineSegmentCheck(line, triangle): #Just calculation. O(1)
 
     #1. Seeing if points are on the right/left side of the segment.
     #Making Normal line
@@ -173,11 +173,11 @@ def lineSegmentCheck(line, triangle):
     else:
         return False
 
-def Ortogonalprojection(u, v):
+def Ortogonalprojection(u, v): #O(1)
     k = DotProduct(u, v) / GetVectorLength(v)**2
     return VectorMultiplication(v, k)
 
-def SegmentCircleCollision():
+def SegmentCircleCollision(): # Every Circle is looping through every Line. "n" is number of circles, "m" is number of lines. O(nm)
     render_objects = renderer.get_render_object()
     remove_keys = []
     for key1 in render_objects: # "n" is number of circles. "m" is number of Lines. O(nm)
@@ -192,7 +192,7 @@ def SegmentCircleCollision():
     for key in remove_keys:
         renderer.remove_render_object(key)
 
-def SegmentCircleCollisionCheck(line, circle):
+def SegmentCircleCollisionCheck(line, circle): #O(1)
 
     A = line['vertices'][0]
     B = line['vertices'][1]
@@ -219,9 +219,9 @@ def SegmentCircleCollisionCheck(line, circle):
         if GetDistance(midPoint, A) < radius:
             return True
 
-def AddNeigborToPoint(): # Every point recives its neighboring points. For AStar
+def AddNeigborToPoint(): # Every point recives its neighboring points. For AStar. "n" is number of points. "m" is number of Lines. O(nm)
     render_objects = renderer.get_render_object()
-    for key1 in render_objects: # "n" is number of points. "m" is number of Lines. O(nm)
+    for key1 in render_objects:
         point = render_objects[key1]
         if point["type"] == "Point":
             # Searshing for Point
@@ -233,7 +233,7 @@ def AddNeigborToPoint(): # Every point recives its neighboring points. For AStar
                     elif point['vertices'][0] == line['vertices'][1]:  # The lines first point is at the same position
                         point["neighbors"].append(line['vertices'][0])  # The other point on the line.
 
-def reconstruct_path(cameFrom, current):
+def reconstruct_path(cameFrom, current): #n is number of elements in comeFrom. O(n)
     total_path = [current]
     while current in cameFrom.keys(): #loop every cameFrom
         current = cameFrom[current]
@@ -241,7 +241,7 @@ def reconstruct_path(cameFrom, current):
     return total_path
 
 
-def AStar(start, goal, h=GetDistance):
+def AStar(start, goal, h=GetDistance): # "n" is number of points. "m" is number of neighbors/connections/KNN. O(nm)
     render_objects = renderer.get_render_object()
 
     node_and_neighbors = {} #pointpos: [neighborpos, neighborpos] (700,700): [(600,600),(500,500)]
@@ -250,9 +250,6 @@ def AStar(start, goal, h=GetDistance):
         if point["type"] == "Point":
             node_and_neighbors[point['vertices'][0]] = point["neighbors"]
 
-    #Just for Debug
-    #start = list(node_and_neighbors.keys())[0]
-    #goal = list(node_and_neighbors.keys())[-1]
     print("start:", start, "goal:", goal)
 
     openSet = [start]
@@ -267,7 +264,7 @@ def AStar(start, goal, h=GetDistance):
     gScore[start] = 0
     fScore[start] = h(start, goal)
 
-    while openSet:  # "n" is number of points. "m" is number of neighbors/connections/KNN. O(nm)
+    while openSet:
         #Smallest value in openset
         current = min(openSet, key=fScore.get)
 
@@ -285,7 +282,7 @@ def AStar(start, goal, h=GetDistance):
                     openSet.append(neighbor)
     return []
 
-def MakePathLines(path):  # Ploting the path lines
+def MakePathLines(path):  # Ploting the path lines. "n" is number of nodes in path. O(n)
     for x in range(len(path) - 1):
         renderer.add_render_object("Line", [path[x], path[x + 1]], "pathLine" + str(x), [0, 0, 1])
 
