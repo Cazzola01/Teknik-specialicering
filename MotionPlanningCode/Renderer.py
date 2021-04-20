@@ -1,19 +1,61 @@
 from pyglet.gl import *
-import math as m
+import math
 
 class Renderer():
-
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.render_objects = {}
-        self.circle_num_angles = 361
 
-    """adds a new prmitive that is going to be rendered on screen id is name of the primitive. For example triangle1.
-    Type is Point, Triangle, Quad or Circle
-    vertices is a list of position for the vertices, where each point is a tuple. 
-    If type is Circle then vertices only stores a list of the circle's center-point (tuple) and radius
-    Vertices are given in counter-clockwise order"""
+        #Storing geometric shapes classes
+        self.points = []
+        self.segments = []
+        self.circles = []
+        self.triangles = []
+
+    class Point():
+        def __init__(self, position, color):
+            self.position = position
+            self.color = color
+
+    class Segment():
+        def __init__(self, start, end, color):
+            self.start = start
+            self.end = end
+            self.color = color
+
+    class Circle():
+        def __init__(self, position, radius, color):
+            self.start = position #{x: , y:}
+            self.end = radius
+            self.color = color
+            self.vertices = []  # For rendering
+
+            self.add_vertices()
+
+        def add_vertices(self):
+            for x in range(360):
+                self.vertices.append((self.position[0]+math.cos(math.radians(x))*self.radius,
+                                      self.position[1]+math.sin(math.radians(x))*self.radius))
+
+    class Triangle():
+        def __init__(self, edge_0_position, edge_1_position, edge_2_position, color):
+            self.edge_0_position = edge_0_position
+            self.edge_1_position = edge_1_position
+            self.edge_2_position = edge_2_position
+            self.color = color
+
+    def addPoint(self, position, color):
+        self.points.append(self.Point(position, color))
+
+    def addSegment(self, start, end, color):
+        self.segments.append(self.Segment(start, end, color))
+
+    def addCircle(self, position, radius, color):
+        self.circles.append(self.Circle(position, radius. color))
+
+    def addTriangle(self, edge_0_position, edge_1_position, edge_2_position):
+        self.triangles.append(self.Triangle(edge_0_position, edge_1_position, edge_2_position))
+
     def add_render_object(self, type, vertices, id, color):
         self.render_objects[id] = {}
         self.render_objects[id]["type"] = type
@@ -24,9 +66,9 @@ class Renderer():
             #A circle has a center-point and radius
             self.render_objects[id]["vertices"] = [center]
             self.render_objects[id]["radius"] = radius
-            for i in range(self.circle_num_angles):
-                self.render_objects[id]["vertices"].append((center[0]+m.cos(m.radians(i))*radius,
-                                                            center[1]+m.sin(m.radians(i))*radius))
+            for i in range(360):
+                self.render_objects[id]["vertices"].append((center[0]+math.cos(math.radians(i))*radius,
+                                                            center[1]+math.sin(math.radians(i))*radius))
         elif type == "Quad":
             #A quad is rendered as two trangles where the diagonals are overlapping
             self.render_objects[id]["vertices"] = [vertices[0], vertices[1], vertices[2],
@@ -35,13 +77,6 @@ class Renderer():
             self.render_objects[id]["vertices"] = vertices
             self.render_objects[id]["neighbors"] = [] #neigburs for Astar
         self.render_objects[id]["color"] = color
-
-    def remove_render_object(self, id):
-        if id in self.render_objects:
-            del self.render_objects[id]
-            return True
-        else:
-            return False
 
     def draw(self):
         glClearColor(1, 1, 1, 1)

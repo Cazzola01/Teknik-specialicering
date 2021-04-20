@@ -1,0 +1,13 @@
+class renderer(width, height)
+circles = []
+triangles = []
+segment = []
+
+add(type, color, center)
+if circle:
+	circles.add([color], center])
+if triangles:
+	circles.add([color, center])
+
+
+remove
