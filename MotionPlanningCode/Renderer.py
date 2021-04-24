@@ -50,6 +50,35 @@ class Renderer:
         glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
 
+        # circle
+        for circle in self.circles:
+            glBegin(GL_TRIANGLE_FAN)
+
+            # Make triangles in a circle
+            vertices = []
+            for i in range(360):
+                x = circle.position[0]
+                y = circle.position[1]
+                vertices.append((x + math.cos(math.radians(i)) * circle.radius,
+                                 y + math.sin(math.radians(i)) * circle.radius))
+
+            glColor3f(circle.color[0], circle.color[1], circle.color[2])
+            for vertex in vertices:
+                x = vertex[0]
+                y = vertex[1]
+                glVertex2f(x, y)
+            glEnd()
+
+        # triangle
+        for triangle in self.triangles:
+            glBegin(GL_TRIANGLES)
+            glColor3f(triangle.color[0], triangle.color[1], triangle.color[2])
+            for vertex in triangle.vertices:
+                x = vertex[0]
+                y = vertex[1]
+                glVertex2f(x, y)
+            glEnd()
+
         # point
         for point in self.points:
             glPointSize(4)
@@ -79,31 +108,4 @@ class Renderer:
 
             glEnd()
 
-        # circle
-        for circle in self.circles:
-            glBegin(GL_TRIANGLE_FAN)
 
-            # Make triangles in a circle
-            vertices = []
-            for i in range(360):
-                x = circle.position[0]
-                y = circle.position[1]
-                vertices.append((x + math.cos(math.radians(i)) * circle.radius,
-                                 y + math.sin(math.radians(i)) * circle.radius))
-
-            glColor3f(circle.color[0], circle.color[1], circle.color[2])
-            for vertex in vertices:
-                x = vertex[0]
-                y = vertex[1]
-                glVertex2f(x, y)
-            glEnd()
-
-        # triangle
-        for triangle in self.triangles:
-            glBegin(GL_TRIANGLES)
-            glColor3f(triangle.color[0], triangle.color[1], triangle.color[2])
-            for vertex in triangle.vertices:
-                x = vertex[0]
-                y = vertex[1]
-                glVertex2f(x, y)
-            glEnd()
