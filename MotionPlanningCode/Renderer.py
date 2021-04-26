@@ -94,7 +94,7 @@ class Renderer:
         for segment in self.segments:
             glBegin(GL_LINES)
 
-            glColor3f(segment.color[0], segment.color[1], segment.color[2])  # Do it need to be twice?
+            glColor3f(segment.color[0], segment.color[1], segment.color[2])
 
             # start
             x = segment.start[0]
@@ -107,5 +107,3 @@ class Renderer:
             glVertex2f(x, y)
 
             glEnd()
-
-
