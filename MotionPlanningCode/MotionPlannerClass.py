@@ -230,9 +230,14 @@ def a_star(start, goal, h=get_distance):
     return []
 
 
+def make_path_lines(path):  # Plotting the path lines. "n" is number of nodes in path. O(n)
+    for x in range(len(path) - 1):
+        renderer.add_segment(start=path[x], end=path[x + 1], color=[0, 0, 1])
+
+
 if __name__ == '__main__':
     width = 800
-    height = 800
+    height = 600
     window = pyglet.window.Window(width=width, height=height)
     renderer = Renderer()
 
@@ -242,14 +247,20 @@ if __name__ == '__main__':
                           color=[1, 0, 0])
     renderer.add_triangle(vertex_0_position=(100, 100), vertex_1_position=(300, 100), vertex_2_position=(700, 200),
                           color=[1, 0, 0])
-    generate_all_points(num=500)
+    generate_all_points(num=1000)
     point_circle_collision()
     point_triangle_collision()
     knn(k=5)
     segment_triangle_collision()
     segment_circle_collision()
     add_neighbors_to_points()
-    print(a_star(renderer.points[0].position, renderer.points[1].position, h=get_distance))
+
+    start = renderer.points[0].position
+    goal = renderer.points[1].position
+    path = a_star(start, goal, h=get_distance)
+    print("start", start, "goal", goal)
+    print(path)
+    make_path_lines(path)
 
 
 @window.event
