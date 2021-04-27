@@ -250,23 +250,52 @@ if __name__ == '__main__':
     generate_all_points(num=1000)
     point_circle_collision()
     point_triangle_collision()
-    knn(k=5)
-    segment_triangle_collision()
-    segment_circle_collision()
-    add_neighbors_to_points()
 
-    start = renderer.points[0].position
-    goal = renderer.points[1].position
-    path = a_star(start, goal, h=get_distance)
-    print("start", start, "goal", goal)
-    print(path)
-    make_path_lines(path)
+    # global variables
+    start_point = ()
+    end_point = ()
+    place_start_point = True
 
 
 @window.event
 def on_draw():
     window.clear()
     renderer.draw()
+
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    global start_point, end_point, place_start_point
+    # Place start_point
+    if button == pyglet.window.mouse.LEFT and place_start_point:
+        renderer.add_point(position=(x, y), color=[0, 0, 1])
+        start_point = (x, y)
+        place_start_point = False  # ready to place end_point
+        print("left")
+
+    # Place end_point
+    elif button == pyglet.window.mouse.LEFT and not place_start_point:
+        renderer.add_point(position=(x, y), color=[1, 0, 0])
+        end_point = (x, y)
+        place_start_point = True  # ready to place start_point again
+
+    # Checking so new point not colliding
+    point_circle_collision()
+    point_triangle_collision()
+
+
+@window.event
+def on_key_press(symbol, modifiers):
+    # remove old segments
+    if symbol == key.SPACE:
+        renderer.segments.clear()
+    knn(5)  # connecting new lines
+    segment_triangle_collision()
+    segment_circle_collision()
+    add_neighbors_to_points()
+    path = a_star(start=start_point, goal=end_point)
+    print(path)
+    make_path_lines(path)  # Plotting the path lines
 
 
 pyglet.app.run()
