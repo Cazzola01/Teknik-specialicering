@@ -186,6 +186,50 @@ def add_neighbors_to_points():
                 point.neighbors.append(segment.start)
 
 
+def reconstruct_path(came_from, current):  # n is number of elements in come_from. O(n)
+    total_path = [current]
+    while current in came_from.keys():  # loop every came_from
+        current = came_from[current]
+        total_path.insert(0, current)  # Add element on first position
+    return total_path
+
+
+def a_star(start, goal, h=get_distance):
+    open_set = [start]
+    came_from = {}
+    g_score = {}
+    f_score = {}
+    for point in renderer.points:
+        g_score[point.position] = float('inf')
+        f_score[point.position] = float('inf')
+    g_score[start] = 0
+    f_score[start] = h(start, goal)
+
+    while open_set:
+        # Smallest value in open_set
+        current = min(open_set, key=f_score.get)
+        if current == goal:
+            return reconstruct_path(came_from, current)
+
+        open_set.remove(current)
+
+        # Finding index where point.position == current position
+        for x, point in enumerate(renderer.points):
+            if point.position == current:
+                index = x
+                break
+
+        for neighbor in renderer.points[index].neighbors:
+            tentative_g_score = g_score[current] + h(start, goal)
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + h(neighbor, goal)
+                if neighbor not in open_set:
+                    open_set.append(neighbor)
+    return []
+
+
 if __name__ == '__main__':
     width = 800
     height = 800
@@ -198,12 +242,14 @@ if __name__ == '__main__':
                           color=[1, 0, 0])
     renderer.add_triangle(vertex_0_position=(100, 100), vertex_1_position=(300, 100), vertex_2_position=(700, 200),
                           color=[1, 0, 0])
-    generate_all_points(num=100)
+    generate_all_points(num=500)
     point_circle_collision()
     point_triangle_collision()
     knn(k=5)
     segment_triangle_collision()
     segment_circle_collision()
+    add_neighbors_to_points()
+    print(a_star(renderer.points[0].position, renderer.points[1].position, h=get_distance))
 
 
 @window.event
