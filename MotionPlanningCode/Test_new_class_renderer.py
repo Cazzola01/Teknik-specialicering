@@ -1,8 +1,7 @@
-from MotionPlanningCode.Renderer import Renderer
+import MotionPlanningCode.renderer as renderer
 import pyglet
 
 window = pyglet.window.Window(width=800, height=800)
-renderer = Renderer()
 
 renderer.add_point(position=(300, 300), color=[0.7, 0.7, 0])
 renderer.add_circle(position=(400, 400), radius=100, color=[0.5, 0, 0])
