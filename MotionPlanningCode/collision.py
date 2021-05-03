@@ -88,6 +88,7 @@ def segment_circle_collision():
                 renderer.segments.remove(segment)
 
 
+# O(len(renderer.circles) * len(renderer.points))
 def point_circle_collision():
     for circle in renderer.circles:
         for point in list(renderer.points):
@@ -96,6 +97,7 @@ def point_circle_collision():
                 renderer.points.remove(point)
 
 
+# O(1)
 def point_triangle_collision():
     for triangle in renderer.triangles:
         for point in list(renderer.points):
@@ -111,4 +113,3 @@ def point_triangle_collision():
                     and (vector.dot_product(vector.get_normal_vector(bc), vector.create_vector(b, point.position)) >= 0)\
                     and (vector.dot_product(vector.get_normal_vector(ca), vector.create_vector(c, point.position)) >= 0):
                 renderer.points.remove(point)
-                
