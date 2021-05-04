@@ -100,7 +100,7 @@ def point_circle_collision():
                 renderer.points.remove(point)
 
 
-# O(1)
+# # O(len(renderer.triangles) * len(renderer.points))
 def point_triangle_collision():
     for triangle in renderer.triangles:
         for point in list(renderer.points):
