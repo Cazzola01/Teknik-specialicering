@@ -1,9 +1,26 @@
 import MotionPlanningCode.renderer as renderer
 import MotionPlanningCode.collision as collision
 import MotionPlanningCode.vector as vector
+import json
 import pyglet
 import random
 from pyglet.window import key, mouse
+
+
+# Reading JSON file, plotting objects, returning settings
+# O(len("obstacles"))
+def read_file():
+    # Loading JSON file
+    with open('obstacles.json') as json_file:
+        data = json.load(json_file)
+    # Plotting shapes
+    for value in data["obstacles"].values():
+        if value["type"] == "circle":
+            renderer.add_circle(position=value["position"], radius=value["radius"], color=value["color"])
+        elif value["type"] == "triangle":
+            renderer.add_triangle(vertices=value["vertices"], color=value["color"])
+    # Function returning: width, height and k
+    return data["settings"]["width"], data["settings"]["height"], data["settings"]["k"], data["settings"]["point num"]
 
 
 # plotting random points all over screen.
@@ -97,17 +114,10 @@ def make_path_lines(path):
 
 # O(1)
 if __name__ == '__main__':
-    width = 800
-    height = 600
+    width, height, k, point_num = read_file()
     window = pyglet.window.Window(width=width, height=height)
-
-    # Add objects
-    renderer.add_circle(position=(200, 600), radius=100, color=[1, 0, 0])
-    renderer.add_triangle(vertex_0_position=(300, 300), vertex_1_position=(700, 300), vertex_2_position=(700, 700),
-                          color=[1, 0, 0])
-    renderer.add_triangle(vertex_0_position=(100, 100), vertex_1_position=(300, 100), vertex_2_position=(700, 200),
-                          color=[1, 0, 0])
-    generate_all_points(num=1000)
+    # Randomizing points
+    generate_all_points(num=point_num)
     collision.point_circle_collision()
     collision.point_triangle_collision()
 
@@ -153,7 +163,7 @@ def on_key_press(symbol, modifiers):
     # remove old segments
     if symbol == key.SPACE:
         renderer.segments.clear()
-    knn(5)  # connecting new lines
+    knn(k)  # connecting new lines
     collision.segment_triangle_collision()
     collision.segment_circle_collision()
     add_neighbors_to_points()

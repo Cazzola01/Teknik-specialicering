@@ -1,0 +1,31 @@
+{
+	"settings":
+	{
+		"width": 800,
+		"height": 600,
+		"k": 5,
+		"point num": 1000
+	},
+	"obstacles":
+	{
+		"long triangle":
+		{
+			"type": "triangle",
+			"vertices": [[300, 300], [700, 300], [700, 700]],
+			"color": [1,0,0]
+		},
+		"90 triangle":
+		{
+			"type": "triangle",
+			"vertices": [[100, 100], [300, 100], [700, 200]],
+			"color": [1,0,0]
+		},
+		"fat circle":
+		{
+			"type": "circle",
+			"position": [200, 600],
+			"radius": 100,
+			"color": [1,0,0]
+		}
+	}
+}

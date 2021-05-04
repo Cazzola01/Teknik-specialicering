@@ -30,8 +30,8 @@ class Circle:
 
 
 class Triangle:
-    def __init__(self, vertex_0_position, vertex_1_position, vertex_2_position, color):
-        self.vertices = [vertex_0_position, vertex_1_position, vertex_2_position]  # [(2,3), (2,3), (2,3)]
+    def __init__(self, vertices, color):
+        self.vertices = vertices  # [(2,3), (2,3), (2,3)]
         self.color = color
 
 
@@ -49,8 +49,8 @@ def add_circle(position, radius, color):
     circles.append(Circle(position, radius, color))  # adding to list
 
 
-def add_triangle(vertex_0_position, vertex_1_position, vertex_2_position, color):
-    triangles.append(Triangle(vertex_0_position, vertex_1_position, vertex_2_position, color))
+def add_triangle(vertices, color):
+    triangles.append(Triangle(vertices, color))
 
 
 # rendering all objects
