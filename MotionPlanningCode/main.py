@@ -7,6 +7,7 @@ from pyglet.window import key, mouse
 
 
 # plotting random points all over screen.
+# O(num)
 def generate_all_points(num=100):
     for x in range(num):
         random_x = random.randint(0, width)
@@ -15,6 +16,7 @@ def generate_all_points(num=100):
 
 
 # comparing every point to every point and making a line between the k closest ones
+# O(len(renderer.points) * (len(renderer.points) + k))
 def knn(k=5):
     for point in renderer.points:
         distance_and_point_list = []

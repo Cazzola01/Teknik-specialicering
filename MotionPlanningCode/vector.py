@@ -36,6 +36,7 @@ def get_vector_length(v):
 
 
 # Increases the length on both axis
+# O(1)
 def vector_scaling(v, k):  # O(1)
     return [v[0] * k, v[1] * k]
 

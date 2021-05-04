@@ -2,6 +2,8 @@ import MotionPlanningCode.vector as vector
 import MotionPlanningCode.renderer as renderer
 
 
+# returns True/False if the parameters collide
+# O(1)
 def segment_triangle_check(segment, triangle):
     segment_vector = vector.create_vector(segment.start, segment.end)
     segment_normal = vector.get_normal_vector(segment_vector)
@@ -88,6 +90,7 @@ def segment_circle_collision():
                 renderer.segments.remove(segment)
 
 
+# Calculating if the distance is greater then the circles radius.
 # O(len(renderer.circles) * len(renderer.points))
 def point_circle_collision():
     for circle in renderer.circles:
