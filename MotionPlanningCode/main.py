@@ -40,7 +40,7 @@ def knn(k=5):
         for compare_point in renderer.points:
             pos_dist.append((compare_point.position, vector.get_distance(point.position, compare_point.position)))
 
-        pos_dist.remove(min(pos_dist, key=lambda x: x[1]))  # value is 0, because compared to itself.
+        pos_dist.remove(min(pos_dist, key=lambda x: x[1]))  # smallest value is 0, because compared to itself.
 
         for i in range(k):
             closest_pos = pos_dist.pop(pos_dist.index(min(pos_dist, key=lambda x: x[1])))[0]  # pop smallest distance
