@@ -33,17 +33,18 @@ def generate_all_points(num=100):
 
 
 # comparing every point to every point and making a line between the k closest ones
-# O(len(renderer.points) * (len(renderer.points) + k))
+# O(len(renderer.points) * (len(renderer.points) + (k + 1)))
 def knn(k=5):
     for point in renderer.points:
-        distance_and_point_list = []
+        pos_dist = []
         for compare_point in renderer.points:
-            distance_and_point_list.append([vector.get_distance(point.position, compare_point.position), compare_point])
-        distance_and_point_list = sorted(distance_and_point_list, key=lambda x: x[0])
-        distance_and_point_list = distance_and_point_list[1:]  # removing first element, which is 0, compared to itself
-        distance_and_point_list = distance_and_point_list[:k]  # Just the 5 first points
-        for distance_and_point in distance_and_point_list:
-            renderer.add_segment(start=point.position, end=distance_and_point[1].position, color=[0.8, 0.8, 0.8])
+            pos_dist.append((compare_point.position, vector.get_distance(point.position, compare_point.position)))
+
+        pos_dist.remove(min(pos_dist, key=lambda x: x[1]))  # value is 0, because compared to itself.
+
+        for i in range(k):
+            closest_pos = pos_dist.pop(pos_dist.index(min(pos_dist, key=lambda x: x[1])))[0]  # pop smallest distance
+            renderer.add_segment(start=point.position, end=closest_pos, color=[0.8, 0.8, 0.8])
 
 
 # if any segment contains a specific point, it means the other side of the segment is neighbor.
