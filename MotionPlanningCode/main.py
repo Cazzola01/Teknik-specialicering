@@ -7,8 +7,9 @@ import random
 from pyglet.window import key, mouse
 
 
-# Reading JSON file, plotting objects, returning settings
-# O(len("obstacles"))
+# Reading JSON file, plotting obstacles, returning settings
+# O(len(json_file))
+# len(json_file) is all the objects in the the json file. It is in one for loop.
 def read_file():
     # Loading JSON file
     with open('obstacles.json') as json_file:
@@ -25,6 +26,7 @@ def read_file():
 
 # plotting random points all over screen.
 # O(num)
+# num is the number of random points. They are generated in one for loop.
 def generate_all_points(num=100):
     for x in range(num):
         random_x = random.randint(0, width)
@@ -33,7 +35,9 @@ def generate_all_points(num=100):
 
 
 # comparing every point to every point and making a line between the k closest ones
-# O(len(renderer.points) * (len(renderer.points) + (k + 1)))
+# O(len(renderer.points) * (1 + k) * len(renderer.points)) = O(len(renderer.points)^2 + k)
+# len(renderer.points) is the number of points. (1 + k) because it removes the first point.
+# The last len(renderer.points) is because of the min() in the for loop with range(k)
 def knn(k=5):
     for point in renderer.points:
         pos_dist = []
@@ -43,15 +47,19 @@ def knn(k=5):
         pos_dist.remove(min(pos_dist, key=lambda x: x[1]))  # smallest value is 0, because compared to itself.
 
         for i in range(k):
-            closest_pos = pos_dist.pop(pos_dist.index(min(pos_dist, key=lambda x: x[1])))[0]  # pop smallest distance
+            closest_point = min(pos_dist, key=lambda x: x[1])
+            closest_pos = closest_point[0]  # [0] index is the position
             renderer.add_segment(start=point.position, end=closest_pos, color=[0.8, 0.8, 0.8])
+            pos_dist.remove(closest_point)  #removing
 
 
-# if any segment contains a specific point, it means the other side of the segment is neighbor.
+# looping trough all remaining lines after line collision detection. To see which paths are available.
 # O(len(renderer.points) * len(renderer.segments))
+# a for loop in another for loop
 def add_neighbors_to_points():
     for point in renderer.points:
         for segment in renderer.segments:
+            # if any segment contains a specific point, it means the other side of the segment is neighbor.
             if point.position == segment.start:
                 point.neighbors.append(segment.end)
             elif point.position == segment.end:
@@ -60,6 +68,7 @@ def add_neighbors_to_points():
 
 # after a_star is finished. Returning points in right orders.
 # O(len(came_from))
+# len(came_from) contains all the points in order.
 def reconstruct_path(came_from, current):  # n is number of elements in come_from. O(n)
     total_path = [current]
     while current in came_from.keys():
@@ -69,7 +78,8 @@ def reconstruct_path(came_from, current):  # n is number of elements in come_fro
 
 
 # Calculation the shortest path in a web containing multiple connected lines.
-# O(len(renderer.points) * len(renderer.segments))
+# O(len(renderer.points) * k)
+# k is the the number of neighbors every point has.
 def a_star(start, goal, h=vector.get_distance):
     open_set = [start]
     came_from = {}
@@ -106,19 +116,22 @@ def a_star(start, goal, h=vector.get_distance):
     return []
 
 
-# Plotting the path lines.
+# Plotting the blue path lines.
 # O(len(path))
+# len(path) is the number of positions in the path
 def make_path_lines(path):
     for x in range(len(path) - 1):
         renderer.add_segment(start=path[x], end=path[x + 1], color=[0, 0, 1])
 
-
-# O(1)
+# Setting up the start screen
+# Adding all O()
+# O(len(json_file) + random_points_num + len(renderer.circles) * len(renderer.points) + len(renderer.triangles) * len(renderer.points))
+# O(len(renderer.points) * (len(renderer.circles) + len(renderer.triangles)))
 if __name__ == '__main__':
-    width, height, k, point_num = read_file()
+    width, height, k, random_points_num = read_file()
     window = pyglet.window.Window(width=width, height=height)
     # Randomizing points
-    generate_all_points(num=point_num)
+    generate_all_points(num=random_points_num)
     collision.point_circle_collision()
     collision.point_triangle_collision()
 
@@ -136,7 +149,8 @@ def on_draw():
 
 
 # user presses mouse to place start and end point
-# O(1)
+# len(renderer.circles) * len(renderer.points) + len(renderer.triangles) * len(renderer.points)
+# The two collision check has that O()
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     global start_point, end_point, place_start_point
@@ -158,19 +172,18 @@ def on_mouse_press(x, y, button, modifiers):
 
 
 # user presses space bar to calculate shortest past between start and end point
-# O(1)
+# O(len(renderer.points)^2 + k + len(renderer.triangles) * len(renderer.segments) + len(renderer.circles) * len(renderer.segments) + len(renderer.points) * len(renderer.segments) + len(renderer.points) * k + len(path))
 @window.event
 def on_key_press(symbol, modifiers):
-    # remove old segments
     if symbol == key.SPACE:
-        renderer.segments.clear()
-    knn(k)  # connecting new lines
-    collision.segment_triangle_collision()
-    collision.segment_circle_collision()
-    add_neighbors_to_points()
-    path = a_star(start=start_point, goal=end_point)
-    print(path)
-    make_path_lines(path)  # Plotting the path lines
+        renderer.segments.clear()  # remove old segments
+        knn(k)  # connecting new lines
+        collision.segment_triangle_collision()
+        collision.segment_circle_collision()
+        add_neighbors_to_points()
+        path = a_star(start=start_point, goal=end_point)
+        print(path)
+        make_path_lines(path)  # Plotting the path lines
 
 
 pyglet.app.run()

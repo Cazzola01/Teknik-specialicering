@@ -53,6 +53,7 @@ def segment_triangle_check(segment, triangle):
 
 
 # O(len(renderer.triangles) * len(renderer.segments))
+# a for loop in a for loop
 def segment_triangle_collision():
     for triangle in renderer.triangles:
         for segment in list(renderer.segments):
@@ -62,6 +63,7 @@ def segment_triangle_collision():
 
 # returns True/False if the parameters collide
 # O(1)
+# just calculation
 def segment_circle_check(segment, circle):
     ab = vector.create_vector(segment.start, segment.end)
     ba = vector.create_vector(segment.end, segment.start)
@@ -83,6 +85,7 @@ def segment_circle_check(segment, circle):
 
 
 # O(len(renderer.circles) * len(renderer.segments))
+# a for loop in a for loop
 def segment_circle_collision():
     for circle in renderer.circles:
         for segment in list(renderer.segments):
@@ -92,6 +95,7 @@ def segment_circle_collision():
 
 # Calculating if the distance is greater then the circles radius.
 # O(len(renderer.circles) * len(renderer.points))
+# a for loop in a for loop
 def point_circle_collision():
     for circle in renderer.circles:
         for point in list(renderer.points):
@@ -101,6 +105,7 @@ def point_circle_collision():
 
 
 # # O(len(renderer.triangles) * len(renderer.points))
+# a for loop in a for loop
 def point_triangle_collision():
     for triangle in renderer.triangles:
         for point in list(renderer.points):
