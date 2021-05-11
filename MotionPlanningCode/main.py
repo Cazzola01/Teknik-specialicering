@@ -83,7 +83,7 @@ def reconstruct_path(came_from, current):  # n is number of elements in come_fro
 
 # Calculation the shortest path in a web containing multiple connected lines.
 # O(len(renderer.points) * k)
-# k is the the number of neighbors every point has.
+# k is the the number of neighbors every point has and len(renderer.points) is the number of points.
 def a_star(start, goal, h=vector.get_distance):
     open_set = [start]
     came_from = {}
