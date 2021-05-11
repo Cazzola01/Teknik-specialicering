@@ -5,6 +5,10 @@ import json
 import pyglet
 import random
 from pyglet.window import key, mouse
+# total O() is:
+# def main  O(len(renderer.points) * (len(renderer.circles) + len(renderer.triangles))
+#def on_mouse_press. point collision detection.  + len(renderer.points) * (len(renderer.circles) + len(renderer.triangles))
+#def on_key_press. knn and a_start, whole chabang.    + len(renderer.points)^2 + len(renderer.segments) * (len(renderer.triangles) + len(renderer.circles) + len(renderer.points)^2)))
 
 
 # Reading JSON file, plotting obstacles, returning settings
@@ -123,10 +127,11 @@ def make_path_lines(path):
     for x in range(len(path) - 1):
         renderer.add_segment(start=path[x], end=path[x + 1], color=[0, 0, 1])
 
+
 # Setting up the start screen
 # Adding all O()
 # O(len(json_file) + random_points_num + len(renderer.circles) * len(renderer.points) + len(renderer.triangles) * len(renderer.points))
-# O(len(renderer.points) * (len(renderer.circles) + len(renderer.triangles)))
+# simplified: O(len(renderer.points) * (len(renderer.circles) + len(renderer.triangles)))
 if __name__ == '__main__':
     width, height, k, random_points_num = read_file()
     window = pyglet.window.Window(width=width, height=height)
@@ -150,6 +155,7 @@ def on_draw():
 
 # user presses mouse to place start and end point
 # len(renderer.circles) * len(renderer.points) + len(renderer.triangles) * len(renderer.points)
+# simplified: len(renderer.points) * (len(renderer.circles) + len(renderer.triangles))
 # The two collision check has that O()
 @window.event
 def on_mouse_press(x, y, button, modifiers):
@@ -173,6 +179,7 @@ def on_mouse_press(x, y, button, modifiers):
 
 # user presses space bar to calculate shortest past between start and end point
 # O(len(renderer.points)^2 + k + len(renderer.triangles) * len(renderer.segments) + len(renderer.circles) * len(renderer.segments) + len(renderer.points) * len(renderer.segments) + len(renderer.points) * k + len(path))
+# simplified: len(renderer.points)^2 + len(renderer.segments) * (len(renderer.triangles) + len(renderer.circles) + len(renderer.points)^2))
 @window.event
 def on_key_press(symbol, modifiers):
     if symbol == key.SPACE:

@@ -4,6 +4,7 @@ import MotionPlanningCode.renderer as renderer
 
 # returns True/False if the parameters collide
 # O(1)
+# just calculations
 def segment_triangle_check(segment, triangle):
     segment_vector = vector.create_vector(segment.start, segment.end)
     segment_normal = vector.get_normal_vector(segment_vector)
